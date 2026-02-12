@@ -8,36 +8,34 @@ The analysis pipeline consists of three sequential notebooks that process experi
 
 ```mermaid
 flowchart TD
-    I1[Green Images] --> B[01. TPE_disk_tracking_stardist.ipynb]
+    I1[Green Images] --> B[01.TPE_disk_tracking_stardist.ipynb]
     I2[UV Image] --> B
-    B --> C[Trajectory .pkl File<br/> contain positions, angles, IDs]
-    C --> D[02. Contact Detection<br/>CNN Classification]
-    D --> E[Contact Dataframe<br/>pairs, positions, angles]
-    E --> F[03. Force Computation<br/>ResNet + Optimization]
-    F --> G[Force Vectors<br/>magnitudes & directions]
-    
-    I[Contact CNN Model] -.-> D
-    J[Force Prediction Model] -.-> F
-    
-    style I1 fill: white, color:green
-    style I2 fill: white, color:blue
-    style C fill:#fff4e1, color:black
-    style E fill:#fff4e1, color:black
-    style G fill:#e8f5e9, color:black
-    style B fill:#f3e5f5,color:black
-    style D fill:#f3e5f5
-    style F fill:#f3e5f5
+    I3[PE Image] --> D
+    B --> C[Trajectory .pkl File<br/> -> positions, angles, IDs]
+    C --> D[02.TPE_contact_detect.ipynb]
+    D --> E[Contact Bond .pkl File<br/> -> pairs, positions, angles]
+    E --> F[03.TPE_solve_force_vector_with_ResNet_guess.ipynb]
+    F --> G[Force .pkl File<br/> -> magnitudes & angles of contact forces]
+        
+    style I1 stroke:#4CAF50,stroke-width:3px
+    style I2 stroke:#2196F3,stroke-width:3px
+    style I3 stroke:#FFC107,stroke-width:3px
+    style C stroke:#FFA726,stroke-width:2px
+    style E stroke:#FFA726,stroke-width:2px
+    style G stroke:#FFA726,stroke-width:2px
+    style B stroke:#9C27B0,stroke-width:2px
+    style D stroke:#9C27B0,stroke-width:2px
+    style F stroke:#9C27B0,stroke-width:2px
 ```
 
 ## Pipeline Steps
 
 ### Step 1: Disk Tracking with StarDist
-**Notebook:** `01. TPE_disk_tracking_stardist.ipynb`
+**Notebook:** `01.TPE_disk_tracking_stardist.ipynb`
 
 This notebook performs automated detection and tracking of photoelastic disks throughout the experiment.
 
 **Key Features:**
-- Camera alignment correction
 - Disk detection using pre-trained StarDist2D model
 - Particle linking into trajectories using Trackpy
 - Rotation angle computation via PCA on disk orientation markers
@@ -49,11 +47,11 @@ This notebook performs automated detection and tracking of photoelastic disks th
 
 **Outputs:**
 - Pickle file containing:
-  - Particle positions (x, y) for each frame
+  - Particle positions (x, y) for each frame in pixels
   - Particle IDs and trajectories
-  - Disk radii (rpx)
-  - Rotation angles
-  - Boundary particle flags
+  - Disk radii (rpx) in pixels
+  - Angular positions (theta) in degrees
+  - Boundary particle tags
 
 ### Step 2: Contact Detection
 **Notebook:** `02. TPE_contact_detect.ipynb`
@@ -63,12 +61,10 @@ Identifies and classifies contacts between particles using a trained CNN model.
 **Key Features:**
 - Neighbor detection based on distance threshold
 - Contact classification using neural network
-- Removal of duplicate contact pairs
-- Visualization of contact network
 
 **Inputs:**
 - Trajectory pickle file from Step 1
-- Raw images
+- PE images
 - Pre-trained contact detection model
 
 **Outputs:**
@@ -85,9 +81,7 @@ Computes force magnitudes and directions at each contact using photoelastic imag
 
 **Key Features:**
 - Initial force guess using ResNet regression model
-- Photoelastic stress simulation
 - Force optimization with equilibrium constraints (∑F=0, ∑τ=0)
-- GPU-accelerated computation with PyTorch
 
 **Inputs:**
 - Contact data from Step 2
@@ -101,10 +95,21 @@ Computes force magnitudes and directions at each contact using photoelastic imag
 ## Setup
 
 ### Requirements
+
+This pipeline requires a Python environment with deep learning frameworks for model inference and image processing libraries for data manipulation. GPU support is highly recommended for efficient processing of large image datasets.
+
+**Core Dependencies:**
 - Python 3.8+
-- TensorFlow 2.x (for StarDist and contact detection)
-- PyTorch (for force computation)
-- Key packages: stardist, trackpy, cv2, pandas, numpy
+- TensorFlow 2.x (for StarDist and contact detection CNN models)
+- PyTorch (for ResNet-based force computation and optimization)
+- CUDA-compatible GPU (optional but recommended for Steps 1 and 3)
+
+**Scientific Computing:**
+- stardist (segmentation)
+- trackpy (particle tracking)
+- opencv-python (image processing)
+- pandas, numpy (data handling)
+- scikit-image (image analysis)
 
 ### Installation
 ```bash
@@ -157,17 +162,3 @@ Pre-trained models required:
 - **Force prediction ResNet** (initial force guess)
 - **Total force VGG19 models** (separate models for D12 and D15 disks)
 
-## Notes
-
-- Notebooks contain embedded output images that increase file size. Consider clearing outputs before committing to Git.
-- GPU acceleration is recommended for Steps 1 and 3
-- Processing time depends on number of frames and particles
-
-## Citation
-
-If you use this code, please cite:
-[Add your publication details here]
-
-## License
-
-[Add license information here]
