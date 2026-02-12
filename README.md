@@ -8,22 +8,23 @@ The analysis pipeline consists of three sequential notebooks that process experi
 
 ```mermaid
 flowchart TD
-    A[Raw Experimental Images] --> B[01. Disk Tracking<br/>StarDist2D Detection]
-    B --> C[Trajectory Pickle File<br/>positions, angles, IDs]
+    I1[Green Images] --> B[01. TPE_disk_tracking_stardist.ipynb]
+    I2[UV Image] --> B
+    B --> C[Trajectory .pkl File<br/> contain positions, angles, IDs]
     C --> D[02. Contact Detection<br/>CNN Classification]
     D --> E[Contact Dataframe<br/>pairs, positions, angles]
     E --> F[03. Force Computation<br/>ResNet + Optimization]
     F --> G[Force Vectors<br/>magnitudes & directions]
     
-    H[StarDist Model] -.-> B
     I[Contact CNN Model] -.-> D
     J[Force Prediction Model] -.-> F
     
-    style A fill:#e1f5ff
-    style C fill:#fff4e1
-    style E fill:#fff4e1
-    style G fill:#e8f5e9
-    style B fill:#f3e5f5
+    style I1 fill: white, color:green
+    style I2 fill: white, color:blue
+    style C fill:#fff4e1, color:black
+    style E fill:#fff4e1, color:black
+    style G fill:#e8f5e9, color:black
+    style B fill:#f3e5f5,color:black
     style D fill:#f3e5f5
     style F fill:#f3e5f5
 ```
