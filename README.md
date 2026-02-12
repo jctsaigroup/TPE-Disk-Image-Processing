@@ -6,8 +6,26 @@ This repository contains a three-step image analysis pipeline for tracking photo
 
 The analysis pipeline consists of three sequential notebooks that process experimental images to extract particle trajectories and force networks:
 
-```
-Raw Images → Disk Tracking → Contact Detection → Force Computation
+```mermaid
+flowchart TD
+    A[Raw Experimental Images] --> B[01. Disk Tracking<br/>StarDist2D Detection]
+    B --> C[Trajectory Pickle File<br/>positions, angles, IDs]
+    C --> D[02. Contact Detection<br/>CNN Classification]
+    D --> E[Contact Dataframe<br/>pairs, positions, angles]
+    E --> F[03. Force Computation<br/>ResNet + Optimization]
+    F --> G[Force Vectors<br/>magnitudes & directions]
+    
+    H[StarDist Model] -.-> B
+    I[Contact CNN Model] -.-> D
+    J[Force Prediction Model] -.-> F
+    
+    style A fill:#e1f5ff
+    style C fill:#fff4e1
+    style E fill:#fff4e1
+    style G fill:#e8f5e9
+    style B fill:#f3e5f5
+    style D fill:#f3e5f5
+    style F fill:#f3e5f5
 ```
 
 ## Pipeline Steps
