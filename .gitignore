@@ -27,5 +27,4 @@ Thumbs.db
 # *.png
 # *.jpg
 
-# Large model files (VGG19 is too large for GitHub)
-models/Contact_Detect_VGG19_*.h5
+# Note: Large model files are handled by Git LFS (see .gitattributes)
