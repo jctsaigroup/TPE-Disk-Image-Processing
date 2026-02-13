@@ -24,6 +24,8 @@ Thumbs.db
 
 # Data files (uncomment if needed)
 # *.pkl
-# *.h5
 # *.png
 # *.jpg
+
+# Large model files (VGG19 is too large for GitHub)
+models/Contact_Detect_VGG19_*.h5
