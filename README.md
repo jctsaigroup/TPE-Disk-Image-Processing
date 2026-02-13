@@ -96,60 +96,50 @@ Computes force magnitudes and directions at each contact using photoelastic imag
 
 ### Requirements
 
-This pipeline requires a Python environment with deep learning frameworks for model inference and image processing libraries for data manipulation. GPU support is highly recommended for efficient processing of large image datasets.
+This pipeline uses **3 separate conda environments** - one for each notebook. Each environment is shown to work for its specific stage:
 
-**Core Dependencies:**
-- Python 3.8+
-- TensorFlow 2.x (for StarDist and contact detection CNN models)
-- PyTorch (for ResNet-based force computation and optimization)
-- CUDA-compatible GPU (optional but recommended for Steps 1 and 3)
+- **`env01_tracking`** - For notebook 01 (StarDist, TensorFlow, Trackpy)
+- **`env02_contact`** - For notebook 02 (OpenCV, scikit-image, TensorFlow)
+- **`env03_force`** - For notebook 03 (PyTorch, torchvision)
 
-**Scientific Computing:**
-- stardist (segmentation)
-- trackpy (particle tracking)
-- opencv-python (image processing)
-- pandas, numpy (data handling)
-- scikit-image (image analysis)
+The seperate environments are due to the fact that the notebooks are developed over a long period of time, and the dependencies for each stage evolved independently. Since these envs are just exports from my local setup that I tweaked to be functional, they are **not** the minimal workable envs and most likly contain redundancy
 
 ### Installation
-```bash
-# Create conda environment
-conda create -n tpe_analysis python=3.8
-conda activate tpe_analysis
 
-# Install required packages
-pip install stardist trackpy opencv-python pandas numpy scikit-image
-pip install tensorflow torch torchvision
+See [`environments/README.md`](environments/README.md) for detailed installation instructions and environment setup.
+
+**Quick start:**
+```bash
+cd environments/
+conda env create -f env_01_tracking.yml
+conda env create -f env_02_contact.yml
+conda env create -f env_03_force.yml
 ```
 
-## Usage
+**Note:** Make sure to activate the correct environment when running each notebook.
+
+## Usage Outline
 
 1. **Update experiment parameters** in each notebook:
    - `IMG_DIR`: Directory containing experimental images
    - `EXP_FOLDER`: Experiment folder name
-   - `roi`: Region of interest for cropping
 
-2. **Run notebooks sequentially:**
-   ```bash
-   # Step 1: Disk tracking
-   jupyter notebook "01. TPE_disk_tracking_stardist.ipynb"
-   
-   # Step 2: Contact detection
-   jupyter notebook "02. TPE_contact_detect.ipynb"
-   
-   # Step 3: Force computation
-   jupyter notebook "03. TPE_solve_force_vector_with_ResNet_guess.ipynb"
-   ```
+2. Follow the instructions in each notebook to run the analysis steps sequentially
 
 3. **Output files** are saved as pickle files in the specified output directory
 
 ## File Structure
 
 ```
-data processing/
+TPE_image_process_pipeline/
 ├── 01. TPE_disk_tracking_stardist.ipynb    # Disk detection & tracking
 ├── 02. TPE_contact_detect.ipynb            # Contact detection
 ├── 03. TPE_solve_force_vector_with_ResNet_guess.ipynb  # Force computation
+├── environments/                            # Conda environment files
+│   ├── README.md                           # Environment setup guide
+│   ├── env_01_tracking.yml
+│   ├── env_02_contact.yml
+│   └── env_03_force.yml
 ├── README.md                                # This file
 └── .gitignore                               # Git ignore rules
 ```
