@@ -64,6 +64,35 @@ def orientation_weighted_pca(img_gray: np.ndarray):
     return direction, R2
 
 
+def compute_frame_orientations(f: pd.DataFrame, I_blue: np.ndarray,
+                               roi_half_scale: float = 0.6) -> list:
+    """Run weighted-PCA orientation on every particle in one frame.
+
+    Parameters
+    ----------
+    f               : DataFrame slice for this frame (columns: x, y, rpx, ...)
+    I_blue          : 2-D grayscale image (blue channel, already cropped to ROI)
+    roi_half_scale  : fraction of rpx used as the half-size of the UV crop
+
+    Returns
+    -------
+    List of (original_index, dir_x, dir_y, R2) tuples for rows with a valid patch.
+    """
+    import cv2
+    records = []
+    for idx, row in f.iterrows():
+        yc, xc = row['y'], row['x']
+        half = row['rpx'] * roi_half_scale
+        y1, y2 = int(yc - half), int(yc + half)
+        x1, x2 = int(xc - half), int(xc + half)
+        uv_roi = I_blue[y1:y2, x1:x2]
+        if uv_roi.size > 0 and uv_roi.shape[0] > 0 and uv_roi.shape[1] > 0:
+            uv_roi = cv2.GaussianBlur(uv_roi, (5, 5), 1)
+            direction, R2 = orientation_weighted_pca(uv_roi)
+            records.append((idx, direction[0], direction[1], R2))
+    return records
+
+
 def compute_continuous_angles(df: pd.DataFrame) -> pd.DataFrame:
     """Accumulate unwrapped rotation angles across frames for each particle.
 
@@ -106,32 +135,3 @@ def compute_continuous_angles(df: pd.DataFrame) -> pd.DataFrame:
 
     df['angle'] = angle_out
     return df
-
-
-def compute_frame_orientations(f: pd.DataFrame, I_blue: np.ndarray,
-                               roi_half_scale: float = 0.6) -> list:
-    """Run weighted-PCA orientation on every particle in one frame.
-
-    Parameters
-    ----------
-    f               : DataFrame slice for this frame (columns: x, y, rpx, ...)
-    I_blue          : 2-D grayscale image (blue channel, already cropped to ROI)
-    roi_half_scale  : fraction of rpx used as the half-size of the UV crop
-
-    Returns
-    -------
-    List of (original_index, dir_x, dir_y, R2) tuples for rows with a valid patch.
-    """
-    import cv2
-    records = []
-    for idx, row in f.iterrows():
-        yc, xc = row['y'], row['x']
-        half = row['rpx'] * roi_half_scale
-        y1, y2 = int(yc - half), int(yc + half)
-        x1, x2 = int(xc - half), int(xc + half)
-        uv_roi = I_blue[y1:y2, x1:x2]
-        if uv_roi.size > 0 and uv_roi.shape[0] > 0 and uv_roi.shape[1] > 0:
-            uv_roi = cv2.GaussianBlur(uv_roi, (5, 5), 1)
-            direction, R2 = orientation_weighted_pca(uv_roi)
-            records.append((idx, direction[0], direction[1], R2))
-    return records
