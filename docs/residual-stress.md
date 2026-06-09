@@ -7,7 +7,7 @@ The implementation is in [StressSolve_residue_torch](https://github.com/linjunJR
 
 The residual-stress is the non-contact-induced stress patterns inside the disks, presumably due to the fluids, that manifests as a bright rim around every disk. Since the [force inversion](force-solve.md) relies on fitting the contact-induced fringes to the observed image, the rim results in very bad precision when using traditional force fitting algorithm that considers a disk to start out totally stress-free. 
 
-Note that this is a systematic bias on the **stress** level, not just the intensity, so it cannot be easily removed by image shifting pixel values. We must simulate a artificial stress profile, superpose it with the contact-induced stress, and let the optimizer fit the contact forces based off that.
+Note that this is a systematic bias on the **stress** level, not just the intensity, so it cannot be easily removed by image shifting pixel values. We must simulate a artificial stress profile $\sigma^{res}$, superpose it with the contact-induced stress $\sigma^{contact}$, and have all stress-related algorithm to consider the total stress $\sigma  = \sigma^{contact} + \sigma^{res}$ instead of just $\sigma^{contact}$.
 
 ## The stress profile
 
@@ -41,7 +41,7 @@ Here $F_\sigma$ is the photoelastic calibration scale that converts stress to in
 
 $p$ is a free parameter that controls the shape of the residual stress. We find that $p=6$ gives a good fit to the observed rim profile, and we use that for all our simulations. Below is a simulated disk with residual  stress $p = 6$ that is subject to various diametric loads. Note the black cracks that opens up when forces are small nicely resembles the experimental images, and the width bright rim is also well captured.
 
-<img src="\figures\res_stress_synth.png" alt="Residual stress profile" width="800"/>
+![Residual stress profile](figures/res_stress_synth.png){ width="800" }
 
 
 ## Where it appears in code

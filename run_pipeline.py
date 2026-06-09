@@ -49,13 +49,16 @@ import pandas as pd
 # If the script is run with no CLI args, these settings are used.
 # Set to a single string OR a list of strings for batch processing.
 DIRECT_RUN_IMG_DIR = [
-"N:\PROJ_TPE\TPE_20260509A01_N=262x2_e-5rps_2e-2fps_1000frames",
-"N:\PROJ_TPE\TPE_20260510A_N=262x2_6SpeedSweep_REVERSE_strain=0.5_5e2FramesEach"
+r"N:\PROJ_TPE\TPE_20260529A_N=252x2_6SpeedSweep_BOTHWAYS_strain=pi_5e2FramesEach",
+r"N:\PROJ_TPE\TPE_20260527B01_N=257x2_1e-5rps_strain=2pi_2e3Frames_0.02fps",
+r"N:\PROJ_TPE\TPE_20260531A_N=252x2_e-5rps_strain=2pi_2e3frames_0.02fps",
+r"N:\PROJ_TPE\TPE_20260526A_N=257x2_6SpeedSweep_strain=pi_5e2FramesEach",
+
 ]
 
 DIRECT_RUN_VERBOSE = 1
 DIRECT_RUN_SKIP_TRACKING = 1
-DIRECT_RUN_SKIP_CONTACT = 0
+DIRECT_RUN_SKIP_CONTACT = 0 
 
 # ── default paths and params ──────────────────────────────────────────────────────────
 DEFAULT_PKL_DIR  = r'M:\Archive\Proj_TPE\Disk_traj_files'
@@ -71,9 +74,9 @@ DIRECT_RUN_D_TOL = DEFAULT_D_TOL
 # Calibrated: 2026-05-11
 # To recalibrate: replace the 9 numbers below with the new H matrix values.
 CALIB_DATE = '2026-05-11'
-DEFAULT_CALIB_H = np.array([[ 1.00897850e+00,  2.09385077e-02, -1.22728762e+00],
-       [-1.80085815e-02,  1.01619232e+00, -4.11885450e+01],
-       [-2.43424373e-06,  8.55305735e-07,  1.00000000e+00]])
+DEFAULT_CALIB_H = np.array([[ 1.01091010e+00,  2.18656475e-02, -1.13597485e+01],
+       [-1.75312312e-02,  1.01766535e+00, -4.21511105e+01],
+       [-1.52393531e-06,  1.34024721e-06,  1.00000000e+00]])
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────
