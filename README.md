@@ -5,6 +5,8 @@ This pipeline automates the full analysis workflow of a 2D granular experiment u
  
 This repository contains a three-step image analysis pipeline for tracking photoelastic disks, detecting contacts, and computing force vectors in granular material experiments.
 
+Below is a quick overview of the package and quick starts. For details, refer to: https://linjunjr.github.io/TPE_Disk_Image_Processing/
+
 <table><tr>
 <td><img src="figures\original.png" alt="Green channel images" width="500"/></td>
 <td><img src="figures\reconstructed.png" alt="Blue channel images" width="500"/></td>
