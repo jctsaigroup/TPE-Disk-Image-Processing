@@ -9,13 +9,13 @@
         <meta name="author" content="jctsaigroup">
       
       
-        <link rel="canonical" href="https://linjunJR.github.io/TPE_Disk_Image_Processing/step1-tracking/">
+        <link rel="canonical" href="https://linjunJR.github.io/TPE_Disk_Image_Processing/train-overview/">
       
       
-        <link rel="prev" href="../setup/">
+        <link rel="prev" href="../force-solve/">
       
       
-        <link rel="next" href="../step2-contact/">
+        <link rel="next" href="../stardist-train/">
       
       
         
@@ -26,7 +26,7 @@
     
     
       
-        <title>Step 1 — Disk Tracking - TPE Disk Image Processing</title>
+        <title>Overview - TPE Disk Image Processing</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#step-1-disk-tracking-with-stardist" class="md-skip">
+        <a href="#training-and-customizing-your-own-models" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Step 1 — Disk Tracking
+              Overview
             
           </span>
         </div>
@@ -296,20 +296,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -330,7 +328,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -345,37 +343,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 1 — Disk Tracking
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../step1-tracking/" class="md-nav__link">
         
   
   
@@ -391,120 +362,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-      
-        <li class="md-nav__item">
-  <a href="#what-the-notebook-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the notebook does
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What the notebook does">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-disk-detection-stardist2d" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Disk detection (StarDist2D)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-particle-linking-trackpy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Particle linking (Trackpy)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-rotation-angle-via-pca" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Rotation angle via PCA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-dog-refinement-of-disk-centers-for-improved-tracking-accuracy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. DoG Refinement of disk centers for improved tracking accuracy
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-per-particle-g2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Per-particle G²
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#outputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Outputs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-by-step-instructions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step-by-step instructions
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -855,18 +712,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked="">
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -887,7 +746,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -902,10 +761,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../train-overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -921,6 +789,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1037,108 +906,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-      
-        <li class="md-nav__item">
-  <a href="#what-the-notebook-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the notebook does
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What the notebook does">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-disk-detection-stardist2d" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Disk detection (StarDist2D)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-particle-linking-trackpy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Particle linking (Trackpy)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-rotation-angle-via-pca" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Rotation angle via PCA
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-dog-refinement-of-disk-centers-for-improved-tracking-accuracy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. DoG Refinement of disk centers for improved tracking accuracy
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-per-particle-g2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Per-particle G²
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#outputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Outputs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-by-step-instructions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step-by-step instructions
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1154,87 +921,11 @@
 
 
 
-<h1 id="step-1-disk-tracking-with-stardist">Step 1 — Disk Tracking with StarDist</h1>
-<p><strong>Notebook:</strong> <a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/01.%20TPE_disk_tracking_stardist.ipynb"><code>01. TPE_disk_tracking_stardist.ipynb</code></a><br>
-<strong>Kernel:</strong> <code>stardist_env</code></p>
-<p>This notebook detects and tracks photoelastic disks across all frames using a pre-trained <a href="https://github.com/stardist/stardist">StarDist2D</a> segmentation model, then computes orientation angles from the UV fluorescent image, and per-particle <span class="arithmatex">\(G^2\)</span> values from the PE images as well.</p>
-<div style="display:flex; gap:16px; flex-wrap:wrap;">
-  <div style="flex:1; min-width:140px; text-align:center">
-    <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/green.png" data-desc-position="bottom"><img src="../figures/green.png" style="width:100%; border-radius:4px"></a>
-    <em>Green channel — disk positions</em>
-  </div>
-  <div style="flex:1; min-width:140px; text-align:center">
-    <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/UV.png" data-desc-position="bottom"><img src="../figures/UV.png" style="width:100%; border-radius:4px"></a>
-    <em>UV channel — orientation markers</em>
-  </div>
-  <div style="flex:1; min-width:140px; text-align:center">
-    <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/PE.png" data-desc-position="bottom"><img src="../figures/PE.png" style="width:100%; border-radius:4px"></a>
-    <em>PE image — photoelastic fringes</em>
-  </div>
-</div>
-
-<hr>
-<h2 id="what-the-notebook-does">What the notebook does</h2>
-<h3 id="1-disk-detection-stardist2d">1. Disk detection (<a href="../stardist/">StarDist2D</a>)</h3>
-<p>Each green-channel frame is fed to the StarDist2D model, which returns star-convex polygon instances for every disk. Centroids and radii (<code>rpx</code>) are extracted from the instance labels.</p>
-<h3 id="2-particle-linking-trackpy">2. Particle linking (<a href="https://soft-matter.github.io/trackpy/">Trackpy</a>)</h3>
-<p>Detected centroids are linked across frames into trajectories using <a href="http://soft-matter.github.io/trackpy/">Trackpy</a>. Short gaps (single missing frames) are filled by linear interpolation via <code>interpolate_pos_angle</code>.</p>
-<h3 id="3-rotation-angle-via-pca">3. <a href="../angles/">Rotation angle via PCA</a></h3>
-<p>For each detected disk in each frame, the UV-channel patch around the centroid is thresholded and the orientation marker is located. PCA on the marker pixels gives the disk rotation angle <code>theta</code>.</p>
-<h3 id="4-dog-refinement-of-disk-centers-for-improved-tracking-accuracy">4. DoG Refinement of disk centers for improved tracking accuracy</h3>
-<h3 id="5-per-particle-g2">5. Per-particle G²</h3>
-<p>The PE image is cropped around each disk and the mean squared gradient (<span class="arithmatex">\(G^2\)</span>) is computed as a proxy for stress magnitude.</p>
-<hr>
-<h2 id="outputs">Outputs</h2>
-<p>A single pickle file is saved containing a <code>pandas.DataFrame</code> with one row per <em>(particle, frame)</em> pair:</p>
-<table>
-<thead>
-<tr>
-<th>Column</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>particle</code></td>
-<td>Unique particle ID</td>
-</tr>
-<tr>
-<td><code>frame</code></td>
-<td>Frame index</td>
-</tr>
-<tr>
-<td><code>x</code>, <code>y</code></td>
-<td>Centroid position (pixels)</td>
-</tr>
-<tr>
-<td><code>rpx</code></td>
-<td>Disk radius (pixels)</td>
-</tr>
-<tr>
-<td><code>angle</code></td>
-<td>Rotation angle (radians)</td>
-</tr>
-<tr>
-<td><code>g2</code></td>
-<td>Per-particle <span class="arithmatex">\(G^2\)</span> value</td>
-</tr>
-<tr>
-<td><code>boundary</code></td>
-<td><code>True</code> if boundary particle</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="step-by-step-instructions">Step-by-step instructions</h2>
-<p>We choose the black-white camera as the standard frame of reference. So the first thing is to make sure is the camera calibration matrix looks alright. This is used to convert the perspective of the colored camera to the monochrome camera, so that we can track the disks in the green channel and then map those positions perfectly to the standard reference frame of the PE images.</p>
-<p>So go ahead and run the first few cells. Remeber to change the <code>IMG_DIR</code> and <code>EXP_FOLDER</code> accordingly. 
-After the tracking is done, check the diagnostic figures to make sure the tracking looks good:
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/tracking_check.png" data-desc-position="bottom"><img src="../figures/tracking_check.png" style="width:70%; border-radius:4px"></a></p>
-<p>Some red circles might look slightly off, which is fine. Just make sure there are no systematic shifts or scaling issues that points to a bad calibration. If that's the case, you must update the calibration matrix by redoing the chessboard calibration demonstrated in <a href="https://github.com/linjunJR/TPE-Disk-Image-Processing/blob/main//TPE_2cam_calib.ipynb">This notebook</a>, and update the homography matrix in the <code>camera_align</code> function.</p>
-<p>If you're lucky and the tracking looks good, move on to run the next cell that links the detected positions into trajectories. Here you have the option to track in separate segments if your experiment is not one continuous series of frames, but several trials that are filmed into one folder and should be tracked separately. Adjust the <code>N_SEGMENTS</code> and <code>FRAMES_PER_SEG</code> accordingly. The particle trajectories in different trials will not be continuous, and particle indices will be shifted by a large number between trials so ids aren't reused across trials. If your experiment is one continuous recording, just set <code>N_SEGMENTS=1</code> and it will track all frames together.</p>
-<p>From here on all the following cells can be run in one go. No input params needed. Just check the random diagnostic figures to make sure the angles and G² values look reasonable. If all looks good, you should have your trajectory pickle saved and we can move on to Step 2.</p>
-<p>Check out the How-it-Works of <a href="../stardist/">Stardist</a>, <a href="../angles/">Angle detection</a>, and <a href="../g2/">G² calculation</a> in the notebook for more details on the methods and algorithms.</p>
+<h1 id="training-and-customizing-your-own-models">Training and Customizing Your Own Models</h1>
+<p>The models we provide in this repository are trained on a specific dataset and may not perform well on your data due to differences in imaging conditions, disk properties, or experimental setups. At some point you may want to train your own models to achieve better performance.</p>
+<p>The training pipeline itself is in fact fairly standard stuff that is not specific to our project, and can be easily structured or explained by any AI agents. Fundamentals on machine learning can also be found in general machine learning resources such as the <a href="https://pytorch.org/tutorials/">official pytorch tutorial</a>. So this section will not explain many of the functions and classes that are fundamental building blocks of the training pipeline, such as the <code>Dataset</code> and <code>DataLoader</code> classes, the training loop, or the model architecture. We will not be providing a detailed documentation of how to use these either, as they are all well documented in their respective official documentations. </p>
+<p>Aside from that, as anyone who has worked with machine learning models can attest, model architectures and training hyperparameters are often empirically tuned to the dataset and task at hand, and the only way to optimize is to try it out. So we will also not be detailing the specific configs we chose for our models and why.  </p>
+<p>Instead, what we will focus on is the part that is specific to this project: how to prepare your data and labels from the images and annotations you have. A minimal documentation of training configs and training workflow overview is still kept for reference.</p>
 
 
 

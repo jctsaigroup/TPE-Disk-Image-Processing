@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://linjunJR.github.io/TPE_Disk_Image_Processing/stardist-train/">
       
       
-        <link rel="prev" href="../force-solve/">
+        <link rel="prev" href="../train-overview/">
       
       
         <link rel="next" href="../contact-detect-train/">
@@ -761,6 +761,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../train-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -824,26 +852,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-environment-and-folders" class="md-nav__link">
+  <a href="#stage-1-refine-trajectories-manually-optional-but-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Environment and folders
+        Stage 1: Refine trajectories manually (optional but recommended)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-refine-trajectories-manually-optional-but-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Refine trajectories manually (optional but recommended)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Refine trajectories manually (optional but recommended)">
+    <nav class="md-nav" aria-label="Stage 1: Refine trajectories manually (optional but recommended)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -874,15 +891,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-generate-training-masks-from-refined-pkl" class="md-nav__link">
+  <a href="#stage-2-environment-and-folders" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Generate training masks from refined .pkl
+        Stage 2: Environment and folders
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Generate training masks from refined .pkl">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-3-generate-training-masks-from-refined-pkl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3: Generate training masks from refined .pkl
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 3: Generate training masks from refined .pkl">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -897,10 +925,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#important-preprocessing-in-this-notebook" class="md-nav__link">
+  <a href="#output-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important preprocessing in this notebook
+        Output files
       
     </span>
   </a>
@@ -913,22 +941,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-train-stardist2d" class="md-nav__link">
+  <a href="#stage-4-train-stardist2d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Train StarDist2D
+        Stage 4: Train StarDist2D
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. Train StarDist2D">
+    <nav class="md-nav" aria-label="Stage 4: Train StarDist2D">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#41-load-and-check-data" class="md-nav__link">
+  <a href="#data-preparation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.1 Load and check data
+        Data Preparation
       
     </span>
   </a>
@@ -936,10 +964,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-augmentation-used-in-your-notebook" class="md-nav__link">
+  <a href="#data-augmentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.2 Augmentation used in your notebook
+        Data Augmentation
       
     </span>
   </a>
@@ -947,10 +975,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#43-model-configuration" class="md-nav__link">
+  <a href="#model-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.3 Model configuration
+        Model Configuration
       
     </span>
   </a>
@@ -958,10 +986,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#44-save-location-and-training-call" class="md-nav__link">
+  <a href="#training" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.4 Save location and training call
+        Training
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threshold Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-tips-from-this-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical tips from this workflow
       
     </span>
   </a>
@@ -970,50 +1031,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-optimize-thresholds" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Optimize thresholds
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-evaluate-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Evaluate results
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-reuse-trained-model-in-the-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Reuse trained model in the pipeline
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-practical-tips-from-this-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Practical tips from this workflow
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1116,26 +1133,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-environment-and-folders" class="md-nav__link">
+  <a href="#stage-1-refine-trajectories-manually-optional-but-recommended" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Environment and folders
+        Stage 1: Refine trajectories manually (optional but recommended)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-refine-trajectories-manually-optional-but-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Refine trajectories manually (optional but recommended)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Refine trajectories manually (optional but recommended)">
+    <nav class="md-nav" aria-label="Stage 1: Refine trajectories manually (optional but recommended)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1166,15 +1172,26 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-generate-training-masks-from-refined-pkl" class="md-nav__link">
+  <a href="#stage-2-environment-and-folders" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Generate training masks from refined .pkl
+        Stage 2: Environment and folders
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Generate training masks from refined .pkl">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-3-generate-training-masks-from-refined-pkl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3: Generate training masks from refined .pkl
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 3: Generate training masks from refined .pkl">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1189,10 +1206,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#important-preprocessing-in-this-notebook" class="md-nav__link">
+  <a href="#output-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important preprocessing in this notebook
+        Output files
       
     </span>
   </a>
@@ -1205,22 +1222,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-train-stardist2d" class="md-nav__link">
+  <a href="#stage-4-train-stardist2d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Train StarDist2D
+        Stage 4: Train StarDist2D
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. Train StarDist2D">
+    <nav class="md-nav" aria-label="Stage 4: Train StarDist2D">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#41-load-and-check-data" class="md-nav__link">
+  <a href="#data-preparation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.1 Load and check data
+        Data Preparation
       
     </span>
   </a>
@@ -1228,10 +1245,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-augmentation-used-in-your-notebook" class="md-nav__link">
+  <a href="#data-augmentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.2 Augmentation used in your notebook
+        Data Augmentation
       
     </span>
   </a>
@@ -1239,10 +1256,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#43-model-configuration" class="md-nav__link">
+  <a href="#model-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.3 Model configuration
+        Model Configuration
       
     </span>
   </a>
@@ -1250,10 +1267,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#44-save-location-and-training-call" class="md-nav__link">
+  <a href="#training" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.4 Save location and training call
+        Training
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threshold Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-tips-from-this-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical tips from this workflow
       
     </span>
   </a>
@@ -1262,50 +1312,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-optimize-thresholds" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Optimize thresholds
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-evaluate-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Evaluate results
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-reuse-trained-model-in-the-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Reuse trained model in the pipeline
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-practical-tips-from-this-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Practical tips from this workflow
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1327,160 +1333,140 @@
 
 
 <h1 id="train-your-own-stardist-model">Train Your Own StarDist Model</h1>
-<p>This page summarizes the workflow used in:</p>
-<ul>
-<li><a href="https://github.com/linjunJR/stardist-training-and-logistics/blob/main/manual_refine_GUI.ipynb">manual_refine_GUI.ipynb</a></li>
-<li><a href="https://github.com/linjunJR/stardist-training-and-logistics/blob/main/mask_generator.ipynb">mask_generator.ipynb</a></li>
-<li><a href="https://github.com/linjunJR/stardist-training-and-logistics/blob/main/TRAINING_stardist_disk_finder.ipynb">TRAINING_stardist_disk_finder.ipynb</a></li>
-</ul>
-<p>The training process has three stages:</p>
+<p>This page summarizes the workflow used in the <a href="https://github.com/linjunJR/TPE_stardist_disk_tracking_trainer">TPE_stardist_disk_tracking_trainer</a> repo, which contains three notebooks:</p>
 <ol>
-<li>Manually refine disk centroids/radii in a tracking <code>.pkl</code></li>
-<li>Convert refined tracks into instance masks</li>
-<li>Train and validate a <code>StarDist2D</code> model</li>
+<li><a href="https://github.com/linjunJR/TPE_stardist_disk_tracking_trainer/blob/main/manual_refine_GUI.ipynb">manual_refine_GUI.ipynb</a></li>
+<li><a href="https://github.com/linjunJR/TPE_stardist_disk_tracking_trainer/blob/main/mask_generator.ipynb">mask_generator.ipynb</a></li>
+<li><a href="https://github.com/linjunJR/TPE_stardist_disk_tracking_trainer/blob/main/TRAINING_stardist_disk_finder.ipynb">TRAINING_stardist_disk_finder.ipynb</a></li>
 </ol>
+<p>The second and third notebooks are are largely adapted from the <a href="https://github.com/stardist/stardist/tree/main/examples/2D">StarDist2D training example</a>. 
+If you already have nicely labelled data, you can skip the first notebook and directly prepare your paired image/mask files for training, and things should turn out well.
+Otherwise, the first notebook is designed to help you refine your disk detections.</p>
 <hr>
-<h2 id="1-environment-and-folders">1. Environment and folders</h2>
-<p>Use the <code>stardist_env</code> environment described in <a href="../setup/">Setup</a>.</p>
-<p>Expected data layout (relative to <code>stardist training and logistics/</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>stardist_data/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  TPE_disk/
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    train/
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>      images/
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>      masks/
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>stardist_models/
-</code></pre></div>
-<p>The training notebook expects matching filenames in <code>images/</code> and <code>masks/</code>.</p>
-<hr>
-<h2 id="2-refine-trajectories-manually-optional-but-recommended">2. Refine trajectories manually (optional but recommended)</h2>
+<h2 id="stage-1-refine-trajectories-manually-optional-but-recommended">Stage 1: Refine trajectories manually (optional but recommended)</h2>
 <p>Notebook: <code>manual_refine_GUI.ipynb</code></p>
-<p>Purpose: correct missed or incorrect disk detections before generating masks.</p>
+<p>Purpose: correct missed or incorrect disk detections before generating masks. If you already have perfect tracking results, you wouldn't need to train a model anyway. So presumably your trajectory file has some issues that require manual correction, and this notebook provides a convenient GUI to do that. The GUI allows you to use mouseclicks to add missing disks, delete false positives, and quickly iterate through frames.</p>
+<p>You might notice the precision of the corrected disk centers are limited by the mouseclick-based input, but that's usually sufficient for training a model that can learn to predict more precise centers. The key is to provide good coverage of the different disk appearances and configurations in your data, so the model can learn the right features.</p>
 <h3 id="what-to-set">What to set</h3>
 <ul>
 <li><code>pickle_file</code>: input/output trajectory file</li>
-<li><code>frame_files</code>: image sequence path (for example <code>Ic_*.png</code>)</li>
-<li><code>roi</code>: crop region</li>
-<li><code>camera_align(...)</code>: homography matrix for your current optical setup</li>
+<li><code>frame_folder</code>: image sequence path  </li>
+<li><code>camera_align(...)</code>: homography matrix to map your colored camera to the standard frame of reference.</li>
 <li><code>frame_idx</code>: starting frame for editing</li>
+<li><code>step</code>: step size for frame sampling in the GUI</li>
 </ul>
 <h3 id="controls-in-the-gui">Controls in the GUI</h3>
 <ul>
 <li>Left click: add small disk</li>
 <li>Right click: add large disk</li>
 <li><code>d</code>: delete mode, then click a disk to remove</li>
-<li>Left/Right arrow: move frames (step size is 5 in the notebook)</li>
+<li>Left/Right arrow: move frames (step size is defined by <code>step</code>)</li>
 <li><code>s</code>: save</li>
 </ul>
-<p>The notebook writes the corrected dataframe back to the same <code>.pkl</code>.</p>
+<p>The notebook writes the corrected dataframe back to the same <code>.pkl</code>.
+When you run the last cell with <code>save = 1</code>, it will overwrite the original file, so make a backup if you want to keep the unrefined version.</p>
 <hr>
-<h2 id="3-generate-training-masks-from-refined-pkl">3. Generate training masks from refined <code>.pkl</code></h2>
+<h2 id="stage-2-environment-and-folders">Stage 2: Environment and folders</h2>
+<p>Use the <code>stardist_env</code> environment described in <a href="https://github.com/linjunJR/TPE_Disk_Image_Processing/tree/main/environments">environments</a>.</p>
+<p>Expected data layout (relative to <code>stardist training and logistics/</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>stardist_data/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>      images/
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>      masks/
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>stardist_models/
+</code></pre></div>
+<p>The training notebook expects matching filenames in <code>images/</code> and <code>masks/</code>.</p>
+<hr>
+<h2 id="stage-3-generate-training-masks-from-refined-pkl">Stage 3: Generate training masks from refined <code>.pkl</code></h2>
 <p>Notebook: <code>mask_generator.ipynb</code></p>
 <p>Purpose: create paired image/mask files for StarDist instance segmentation.</p>
 <h3 id="what-to-set_1">What to set</h3>
 <ul>
-<li><code>pickle_path</code>: refined trajectory file</li>
-<li><code>circle_img_dir</code>: folder containing input circle/green-channel images</li>
-<li><code>suffix</code>: filename suffix to prevent collisions across experiments</li>
+<li><code>pickle_file</code>: refined trajectory file</li>
+<li><code>frame_folder</code>: folder containing input circle/green-channel images</li>
 <li><code>for frame in [...]</code>: frames to export</li>
 <li><code>save</code> and <code>plot</code>:</li>
-<li>first run with <code>save = 0</code>, <code>plot = 1</code> for visual check</li>
-<li>then run with <code>save = 1</code> to write files</li>
+<li>first run with <code>save = 0</code>, <code>plot = 1</code> for visual check, then run with <code>save = 1</code> to write files</li>
 </ul>
-<h3 id="important-preprocessing-in-this-notebook">Important preprocessing in this notebook</h3>
-<ul>
-<li><code>camera_align(...)</code> applies perspective correction</li>
-<li><code>roi</code> crops the field of view</li>
-<li><code>f['x'] = f['x'] - 100</code> trims the left boundary to match cropped images</li>
-<li>each disk gets a unique instance ID in the output mask (<code>uint16</code>)</li>
-</ul>
+<h3 id="output-files">Output files</h3>
 <p>Outputs are written to:</p>
 <ul>
 <li><code>stardist_data/TPE_disk/train/images/*.tif</code></li>
 <li><code>stardist_data/TPE_disk/train/masks/*.tif</code></li>
 </ul>
-<p>Use identical filenames for each image-mask pair.</p>
+<p>The output files are set to have identical filenames for each image-mask pair.</p>
 <hr>
-<h2 id="4-train-stardist2d">4. Train StarDist2D</h2>
+<h2 id="stage-4-train-stardist2d">Stage 4: Train StarDist2D</h2>
 <p>Notebook: <code>TRAINING_stardist_disk_finder.ipynb</code></p>
-<h3 id="41-load-and-check-data">4.1 Load and check data</h3>
-<p>The notebook:</p>
-<ul>
-<li>reads <code>*.tif</code> from <code>images/</code> and <code>masks/</code></li>
-<li>asserts image and mask filenames match</li>
-<li>converts images to grayscale with <code>I[:,:,0]</code></li>
-<li>normalizes each image with <code>normalize(x, 1, 99.8, axis=(0,1))</code></li>
-<li>fills tiny label holes using <code>fill_label_holes</code></li>
-</ul>
-<p>Then it splits data with:</p>
-<ul>
-<li>random seed: <code>42</code></li>
-<li>validation fraction: <code>15%</code> (minimum 1 image)</li>
-</ul>
-<h3 id="42-augmentation-used-in-your-notebook">4.2 Augmentation used in your notebook</h3>
-<p><code>augmenter(x, y)</code> applies:</p>
-<ul>
-<li>random flips along spatial axes</li>
-<li>intensity perturbation (<code>* U(0.9,1.1) + U(-0.5,0.5)</code>)</li>
-<li>Gaussian noise (<code>sigma = 0.02 * U(0,1)</code>)</li>
-</ul>
-<p>If needed, disable augmentation by passing <code>augmenter=None</code> in <code>model.train</code>.</p>
-<h3 id="43-model-configuration">4.3 Model configuration</h3>
-<p>Current defaults in your notebook:</p>
-<ul>
-<li><code>n_rays = 32</code></li>
-<li><code>grid = (4,4)</code></li>
-<li><code>n_channel_in = 1</code></li>
-<li><code>use_gpu = False and gputools_available()</code></li>
-</ul>
-<p><code>grid = (4,4)</code> is intentionally used to enlarge effective field of view and improve performance for your dense disk scenes.</p>
-<h3 id="44-save-location-and-training-call">4.4 Save location and training call</h3>
-<p>Your notebook creates a timestamped run folder and trains for 300 epochs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">stardist.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">StarDist2D</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">result_folder_name</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%m-</span><span class="si">%d</span><span class="s2">_%H-%M"</span><span class="p">)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">StarDist2D</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">result_folder_name</span><span class="p">,</span> <span class="n">basedir</span><span class="o">=</span><span class="sa">r</span><span class="s2">"C:\Users\jcTSAI\Desktop\stardist_models"</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">h</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">X_trn</span><span class="p">,</span> <span class="n">Y_trn</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_val</span><span class="p">,</span> <span class="n">Y_val</span><span class="p">),</span> <span class="n">augmenter</span><span class="o">=</span><span class="n">augmenter</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<p>Again, go through the <a href="https://github.com/stardist/stardist/tree/main/examples/2D">StarDist2D training example</a>, the FAQs and the original paper for fundamentals of how the model works and what the different parameters mean. Here we will just summarize the key points of how we adapted the training workflow for our specific data and goals. </p>
+<h3 id="data-preparation">Data Preparation</h3>
+<p>Training data is organized under <code>stardist_data/</code> with separate <code>images/</code> and <code>masks/</code> subdirectories. Images and masks are matched by filename (<code>.tif</code> format) and must have identical shapes — the notebook asserts this before proceeding.</p>
+<p>Since the raw images are multi-channel, only the first channel is used:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">I</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">I</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>  <span class="c1"># convert to grayscale</span>
 </code></pre></div>
-<p>Recommended adjustment: change <code>basedir</code> to your project folder, for example:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">StarDist2D</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">result_folder_name</span><span class="p">,</span> <span class="n">basedir</span><span class="o">=</span><span class="s2">"stardist_models"</span><span class="p">)</span>
+<p>Images are normalized to the 1st–99.8th percentile intensity range, which robustly handles outlier bright pixels without clipping useful signal. Small holes in label masks are filled via <code>fill_label_holes</code> to avoid spurious interior boundaries.</p>
+<p>A 15% validation split is applied via random permutation (seeded at 42 for reproducibility).</p>
+<hr>
+<h3 id="data-augmentation">Data Augmentation</h3>
+<p>A custom augmenter is applied during training to improve robustness on limited data. Three operations are applied per sample:</p>
+<table>
+<thead>
+<tr>
+<th>Augmentation</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Random flip</td>
+<td>Applied independently on each spatial axis with 50% probability</td>
+</tr>
+<tr>
+<td>Intensity jitter</td>
+<td>Multiplicative factor in [0.9, 1.1] plus additive offset in [−0.5, 0.5]</td>
+</tr>
+<tr>
+<td>Gaussian noise</td>
+<td>Standard deviation sampled uniformly from [0, 0.02]</td>
+</tr>
+</tbody>
+</table>
+<p>The intensity jitter range is intentionally conservative — enough to prevent overfitting to specific illumination conditions, but not so aggressive as to distort the signal in densely packed regions where contrast between neighboring disks matters.</p>
+<p>To disable augmentation, pass <code>augmenter=None</code> to <code>model.train()</code>.</p>
+<hr>
+<h3 id="model-configuration">Model Configuration</h3>
+<p>The model uses <code>Config2D</code> with the following settings:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">conf</span> <span class="o">=</span> <span class="n">Config2D</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">n_rays</span>       <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">grid</span>         <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">use_gpu</span>      <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">n_channel_in</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">)</span>
 </code></pre></div>
+<p><strong><code>n_rays = 32</code></strong> — the number of radial directions used to parameterize each object's boundary. 32 is the standard default and provides sufficient angular resolution for circular disks. Increasing this would add marginal shape detail at higher computational cost; decreasing it would degrade boundary precision.</p>
+<p><strong><code>grid = (4, 4)</code></strong> — predictions are made on a subsampled grid (one prediction every 4 pixels in each dimension) rather than at every pixel. This is the most important deviation from default settings for our data. With large disk diameters relative to image size, a full-resolution prediction grid is unnecessary and computationally wasteful. The 4×4 grid provides an adequate field of view while significantly speeding up both training and inference.</p>
+<p><strong><code>use_gpu = False</code></strong> — GPU-accelerated data generation via <code>gputools</code> is disabled. This is a deliberate choice for stability; training still runs on GPU if CUDA is available through PyTorch/TensorFlow.</p>
+<p><strong><code>n_channel_in = 1</code></strong> — single grayscale channel input, consistent with the preprocessing step above.</p>
 <hr>
-<h2 id="5-optimize-thresholds">5. Optimize thresholds</h2>
-<p>After training, run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">model</span><span class="o">.</span><span class="n">optimize_thresholds</span><span class="p">(</span><span class="n">X_val</span><span class="p">,</span> <span class="n">Y_val</span><span class="p">)</span>
+<h3 id="training">Training</h3>
+<p>The model is trained for <strong>300 epochs</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">h</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">X_trn</span><span class="p">,</span> <span class="n">Y_trn</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_val</span><span class="p">,</span> <span class="n">Y_val</span><span class="p">),</span> <span class="n">augmenter</span><span class="o">=</span><span class="n">augmenter</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </code></pre></div>
-<p>This selects:</p>
-<ul>
-<li><code>prob_thresh</code>: confidence threshold for keeping a candidate instance</li>
-<li><code>nms_thresh</code>: non-maximum suppression threshold for overlapping candidates</li>
-</ul>
-<p>The optimized values are saved in <code>thresholds.json</code> inside the run folder.</p>
+<p>The trained model is saved automatically to the desktop under a timestamped folder (<code>MM-DD_HH-MM</code>), which avoids overwriting previous runs during iterative experimentation.</p>
 <hr>
-<h2 id="6-evaluate-results">6. Evaluate results</h2>
-<p>The notebook provides two checks:</p>
-<ol>
-<li>Overlay predictions on validation images</li>
-<li>Overlay predictions on a specific test frame (<code>test_image_filename</code>)</li>
-</ol>
-<p>It also computes dataset metrics across IoU thresholds (<code>tau = 0.1 ... 0.9</code>):</p>
+<h3 id="threshold-optimization">Threshold Optimization</h3>
+<p>After training, the two detection thresholds are optimized on the validation set:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">model</span><span class="o">.</span><span class="n">optimize_thresholds</span><span class="p">(</span><span class="n">X_val</span><span class="p">,</span> <span class="n">Y_val</span><span class="p">)</span>
+</code></pre></div>
 <ul>
-<li>precision, recall, accuracy, f1</li>
-<li>mean scores and panoptic quality</li>
-<li>TP/FP/FN counts</li>
+<li><strong><code>prob_thresh</code></strong> — minimum predicted probability for a candidate object to be accepted. Higher values reduce false positives at the cost of missing low-confidence detections.</li>
+<li><strong><code>nms_thresh</code></strong> — IoU threshold for non-maximum suppression. Lower values suppress more overlapping candidates; for densely packed disks with near-zero gaps, this may need careful tuning to avoid merging adjacent particles.</li>
 </ul>
-<p>Use these plots to compare runs and pick your final model.</p>
+<p>The optimized values are stored with the model and used automatically at inference time.</p>
 <hr>
-<h2 id="7-reuse-trained-model-in-the-pipeline">7. Reuse trained model in the pipeline</h2>
-<p>Each trained run folder contains files such as:</p>
-<ul>
-<li><code>weights_best.h5</code></li>
-<li><code>weights_last.h5</code></li>
-<li><code>thresholds.json</code></li>
-</ul>
-<p>Copy the selected model folder into your pipeline model location (for example <code>models/stardist_model/</code>) and point your disk-tracking step to that model.</p>
-<hr>
-<h2 id="8-practical-tips-from-this-workflow">8. Practical tips from this workflow</h2>
+<h3 id="evaluation">Evaluation</h3>
+<p>Detection performance is assessed at multiple IoU thresholds (0.1–0.9) on the validation set, reporting precision, recall, F1, mean matched score, and panoptic quality. These curves give a full picture of how conservative or permissive the model is across varying overlap tolerances.</p>
+<p>Visual inspection is also supported — the notebook overlays predicted instance masks on grayscale images for both validation frames and specific test images, which is useful for catching systematic errors (e.g., split detections at disk boundaries or merged detections in high-density regions).</p>
+<h3 id="practical-tips-from-this-workflow">Practical tips from this workflow</h3>
 <ul>
 <li>Keep camera alignment and ROI consistent between mask generation and inference.</li>
 <li>Use filename suffixes (for example <code>_dense0919A01.tif</code>) when mixing data from multiple experiments.</li>
