@@ -1,6 +1,7 @@
 site_name: TPE Disk Image Processing
 site_description: A three-step pipeline for tracking photoelastic disks, detecting contacts, and computing force vectors in granular experiments.
 site_author: jctsaigroup
+site_url: https://linjunJR.github.io/TPE_Disk_Image_Processing/
 
 theme:
   name: material
@@ -66,6 +67,7 @@ nav:
     - Contact Force Initial Guess: force-guess.md
     - Fitting to Find Forces: force-solve.md
   - Training Your Own :
+    - Overview: train-overview.md
     - StarDist: stardist-train.md
     - Contact Detection: contact-detect-train.md
     - Contact Force Guesser: force-guess-train.md

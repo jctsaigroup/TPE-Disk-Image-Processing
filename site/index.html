@@ -9,6 +9,8 @@
         <meta name="author" content="jctsaigroup">
       
       
+        <link rel="canonical" href="https://linjunJR.github.io/TPE_Disk_Image_Processing/">
+      
       
       
         <link rel="next" href="setup/">
@@ -95,7 +97,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="TPE Disk Image Processing" class="md-header__button md-logo" aria-label="TPE Disk Image Processing" data-md-component="logo">
       
@@ -205,115 +209,6 @@
       
         
           
-            
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-    
-  
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
-        
-  
-  
-    
-  
-  Home
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="setup/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Setup
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="step1-tracking/" class="md-tabs__link">
-          
-  
-  
-  How to Use
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="stardist/" class="md-tabs__link">
-          
-  
-  
-  How it Works
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="stardist-train/" class="md-tabs__link">
-          
-  
-  
-  Training Your Own
-
-        </a>
-      </li>
-    
-  
-
-      
-    </ul>
-  </div>
-</nav>
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -327,10 +222,8 @@
                     
 
 
-  
 
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="TPE Disk Image Processing" class="md-nav__button md-logo" aria-label="TPE Disk Image Processing" data-md-component="logo">
       
@@ -464,11 +357,6 @@
     
     
     
-    
-      
-      
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -635,11 +523,6 @@
     
     
     
-    
-      
-      
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -891,11 +774,6 @@
     
     
     
-      
-      
-        
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -1080,10 +958,7 @@
 
 <h1 id="tpe-disk-image-processing">TPE Disk Image Processing</h1>
 <p>This pipeline automates the full analysis workflow of a 2D granular experiment using <strong>photoelastic disks</strong> — from raw experimental images to a complete force network. It combines deep learning (StarDist, ResNet) with physics-based optimization under mechanical equilibrium constraints.</p>
-<div class="admonition tip">
-<p class="admonition-title">Why this pipeline?</p>
-<p>Wet photoelastic disks inevitably develop residual stress, which renders the classical <span class="arithmatex">\(G^2\)</span> method unreliable. The custom-trained neural networks here are designed to work around this limitation.</p>
-</div>
+<p>The approach is largely inspired by the established <a href="https://github.com/photoelasticity/PeGS2">PeGS algorithms</a>. But PeGS largely relies on a nice monotonic <span class="arithmatex">\(G^2\)</span> calibration curve. Wet photoelastic disks inevitably develop residual stress, which renders the classical <span class="arithmatex">\(G^2\)</span> method unusable. The custom-trained neural networks here are designed to work around this limitation.</p>
 <div style="display:flex; gap:16px; flex-wrap:wrap;">
   <div style="flex:1; min-width:200px">
     <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="figures/original.png" data-desc-position="bottom"><img src="figures/original.png" alt="Experimental image" style="width:100%; border-radius:6px"></a>
@@ -1209,7 +1084,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.top", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>

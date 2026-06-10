@@ -1,8 +1,8 @@
 # TPE Disk Image Processing
 
-This pipeline automates the full analysis workflow of a 2D granular experiment using **photoelastic disks** — from raw experimental images to a complete force network. It combines deep learning (StarDist, ResNet) with physics-based optimization under mechanical equilibrium constraints.
+This document describes the workings of the [TPE_Disk_Image_Processing](https://github.com/linjunjr/TPE-Disk-Image-Processing) project, which automates the full analysis workflow of a 2D granular experiment using **photoelastic disks** — from raw experimental images to a complete force network. It combines deep learning (StarDist, ResNet) with physics-based optimization under mechanical equilibrium constraints.
 
-The approach is largely inspired by the established [PeGS algorithms](https://github.com/photoelasticity/PeGS2). But PeGS largely relies on a nice monotonic $G^2$ calibration curve. Wet photoelastic disks inevitably develop residual stress, which renders the classical $G^2$ method unusable. The custom-trained neural networks here are designed to work around this limitation.
+The approach is largely inspired by the established [PeGS algorithms](https://github.com/photoelasticity/PeGS2). But PeGS largely relies on a nice monotonic $G^2$ calibration curve. Wet photoelastic disks inevitably develop residual stress, which renders the classical $G^2$ method unusable. An empirical form for the residual stress as well as custom-trained neural networks are deployed to work around this limitation.
 
 
 <div style="display:flex; gap:16px; flex-wrap:wrap;">
