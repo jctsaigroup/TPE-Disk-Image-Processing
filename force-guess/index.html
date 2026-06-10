@@ -1062,7 +1062,7 @@
 <li>force magnitude <span class="arithmatex">\(f\)</span> (<code>force_pred</code>)</li>
 <li>contact angle <span class="arithmatex">\(\alpha\)</span> (<code>angle_pred</code>)</li>
 </ul>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="\figures\force_guess_patch.png" data-desc-position="bottom"><img src="\figures\force_guess_patch.png" alt="Force guess" width="200"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/force_guess_patch.png" data-desc-position="bottom"><img src="../figures/force_guess_patch.png" alt="Force guess" width="200"></a></p>
 <p>These predictions are used as warm-start initial guesses for the <a href="../force-solve/">physics-constrained optimizer</a>, which will seek the best solution. The guess is not expected to be perfect, but it should be close enough to the true solution to help the optimizer converge faster and avoid bad local minima. </p>
 <h2 id="why-warm-start-matters">Why warm start matters</h2>
 <p>The inverse problem in <a href="../step3-force/">Step 3</a> is non-convex. Starting from random <code>(f, alpha)</code> is slower and more likely to end in poor local minima, so a good starting point is crucial. The original PeGS implementation uses <span class="arithmatex">\(G^2\)</span> as an initial guess, which fails in the case of residual stress and offers no angle information. The ResNet guess usually puts the optimizer close to a physically plausible basin.</p>
