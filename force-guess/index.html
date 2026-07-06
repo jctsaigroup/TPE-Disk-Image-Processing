@@ -736,6 +736,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training data generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -751,17 +762,6 @@
     <span class="md-ellipsis">
       
         Training params
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inference-flow-in-step-3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Inference flow in Step 3
       
     </span>
   </a>
@@ -1027,6 +1027,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training data generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1042,17 +1053,6 @@
     <span class="md-ellipsis">
       
         Training params
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inference-flow-in-step-3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Inference flow in Step 3
       
     </span>
   </a>
@@ -1078,11 +1078,14 @@
 
 <h1 id="contact-force-initial-guess">Contact Force Initial Guess</h1>
 <h2 id="goal">Goal</h2>
-<p>For each detected contact ROI, the model predicts a force magnitude <span class="arithmatex">\(f\)</span> (<code>force_pred</code>) and a contact angle <span class="arithmatex">\(\alpha\)</span> (<code>angle_pred</code>):</p>
+<p>For each detected contact region, the model predicts a force magnitude <span class="arithmatex">\(f\)</span> (<code>force_pred</code>) and a contact angle <span class="arithmatex">\(\alpha\)</span> (<code>angle_pred</code>):</p>
 <p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="figures/force_guess_patch.png" data-desc-position="bottom"><img src="figures/force_guess_patch.png" alt="Force guess" width="200"></a></p>
 <p>These predictions are used as warm-start initial guesses for the <a href="https://linjunjr.github.io/TPE_Disk_Image_Processing/force-solve/">physics-constrained optimizer</a>, which then searches for the best solution. The guess isn't expected to be perfect — it just needs to be close enough to the true solution that the optimizer converges faster and avoids bad local minima.</p>
 <h2 id="why-warm-start-matters">Why warm start matters</h2>
 <p>The inverse problem in <a href="https://linjunjr.github.io/TPE_Disk_Image_Processing/step3-force/">Step 3</a> is non-convex, so starting from a random <code>(f, alpha)</code> is both slower and more likely to end in a poor local minimum — a good starting point matters. The original PeGS implementation uses <span class="arithmatex">\(G^2\)</span> as an initial guess, but that fails under residual stress and gives no angle information at all. The ResNet guess is more robust: it usually lands the optimizer in a physically plausible basin from the start.</p>
+<h2 id="training-data-generation">Training data generation</h2>
+<p>Given a specific contact force vector, one cannot determine the fringes at the contact region because other contacts on that disk also contribute to the fringe pattern. Thus, when generating the synthetic training data, we need to first generate a set of random contact force vectors, put them on random locations on the perimeter of a disk, and generate the corresponding fringes of the whole disk. Contact regions are then cropped out from the disk images and used for training. </p>
+<p>There are various physical constraints on the possible combinations of contact forces on a disk, such as equilibrium and friction. In addition, the choice of random distribution used to sample the force magnitudes and angles affects the model performance, and should be chosen with care. We largely follow the principles and methods proposed in <a href="https://dx.doi.org/10.1088/2632-2153/ac29d5">Renat Sergazinov and Miroslav Kramár 2021 Mach. Learn.: Sci. Technol. 2 045030</a>. The range of force magnitudes largely falls between 0.01 to 5 N. </p>
 <h2 id="the-model">The Model</h2>
 <p>The force-initialization network is a two-output ResNet18 regressor built in <code>src/force.py</code> via <code>get_model(device, output_dim=2)</code>.</p>
 <table>
@@ -1112,9 +1115,7 @@
 </tbody>
 </table>
 <h2 id="training-params">Training params</h2>
-<h2 id="inference-flow-in-step-3">Inference flow in Step 3</h2>
-<p>In <code>03. TPE_solve_force_vector.ipynb</code>, the model is built with <code>src.get_model(DEVICE)</code>, loaded from its trained <code>.pth</code> weights via <code>load_state_dict</code>, and switched to <code>model.eval()</code>. Contact ROIs are then extracted and preprocessed — resized to 224×224, replicated from grayscale to 3 channels, and normalized with ImageNet statistics — before being run through the model in batched forward passes. The results are written back to the bond table as <code>force_pred</code> and <code>angle_pred</code>.</p>
-<p>These predictions are warm starts only; final values come from the physics-constrained fit described in <a href="https://linjunjr.github.io/TPE_Disk_Image_Processing/force-solve/">Fitting to Find Forces</a>.</p>
+<p>The  model saved in <a href="https://github.com/linjunJR/TPE_Disk_Image_Processing/tree/main/models">models</a> is trained with 30000 synthetic images of contact regions that are cropped from disks subject to random forces. The model's head is first warmed up for up to 1000 epochs with a batch size of 32, using the Adam optimizer with a learning rate of <span class="arithmatex">\(10^{-4}\)</span>, then fine-tuned for 1000 epochs with a learning rate of <span class="arithmatex">\(10^{-6}\)</span>. </p>
 
 
 
