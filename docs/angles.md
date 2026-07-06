@@ -1,7 +1,7 @@
 # Finding Orientation Angles
 
 <figure>
-  <img src="/figures/UV.png"  width="400"/>
+  <img src="../figures/UV.png"  width="400"/>
 </figure>
 
 Disk orientation is determined by analyzing the blue channel image, which contain a fluorescent line on each disk. The process is automated in the [compute_frame_orientations](https://github.com/linjunJR/TPE_Disk_Image_Processing/blob/main/src/orientation.py#L111) function. Below briefly describr the workflow:

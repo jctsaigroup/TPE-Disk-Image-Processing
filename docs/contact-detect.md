@@ -1,63 +1,36 @@
+
 # Contact Detection
 
-Contact detection is performed in two stages:
+Contact detection happens in two stages: a cheap geometric neighbour search that proposes candidate contacts, followed by a CNN classifier that decides which candidates are real.
 
-1. **Neighbour search:** For each frame, all pairs of particles within a distance threshold are considered as candidate contacts.
+## Stage 1 — Neighbour search
 
-    The distance threshold is typically $r_i + r_j + d_{tol}$, where $r_i$ and $r_j$ are the radii of the two disks. $d_{tol}$ is set to 10 pixels for reasonable performance. Larger $d_{tol}$ would increase samples to classify and thus runtime, but smaller $d_{tol}$ might miss some contacts. 
+For each frame, every pair of particles within a distance threshold is treated as a candidate contact. The threshold is \(r_i + r_j + d_{tol}\), where \(r_i\) and \(r_j\) are the two disk radii and \(d_{tol}\) is set to 10 pixels — a value chosen for a reasonable trade-off between runtime and completeness. Raising \(d_{tol}\) pulls in more candidates to classify (slower), while lowering it risks missing real contacts.
 
-    After locating all the ij pairs, the code handles the index:
+Two indexing rules keep this manageable: disks on the boundary are marked `boundary=True` and can only appear as the `j` disk in a pair, so they're never contacted by other boundary disks and never contact anything themselves. And each `ij` pair is counted once rather than twice, since checking it in both directions would double the classification workload for no benefit.
 
-    - Disks on the boundary are marked with `boundary=True`, and these disks can only be the `j` disk in a contact pair (i.e. they can only be contacted by interior disks, not contact other disks). Hence, there is also no contacts between two boundary disks.
+## Stage 2 — CNN classification
 
-    - Each $ij$ pair is only counted once to minimize the classification workload. 
+Each candidate pair is cropped into a small patch centered on the contact:
 
-
-2. **CNN classification:** Each candidate contact patch is cropped from the image:
 <img src="../figures/contact_demo.png" style="width:50%; border-radius:4px"/>
 
-    on the right is a contact, while on the left is a non-contact. These patches are then
-    passed through a trained convolutional neural network (ResNet) to classify as contact or non-contact. The model returns a confidence score for each candidate, and only those above 0.5 are retained as detected contacts.
 
-    The model is trained on similar experiment images of contact patches that are human-labelled. See [training](contact-detect-train.md) for details on the training pipeline and model architecture.
+(the patch on the left shows a real contact; the one on the right doesn't). These patches are passed through a ResNet18 classifier trained on human-labelled examples from experiments. The model outputs a confidence score per candidate, and anything above 0.5 is kept as a detected contact.
 
+After classification, contacts between two bulk disks are duplicated into their reciprocal `ji` pair for convenience downstream; boundary contacts aren't duplicated since they're directional by definition. One more cleanup step: the force-inversion step (Step 3) can't handle a disk that has only one contact, since a single contact can't be in equilibrium. Any such pair is flagged `singular` so it can be filtered out. This is rare, but it's checked for robustness regardless.
 
-    After the detection, contacts between bulk disks are duplicated to form the reciprocal `ji` contact, which is convenient for later usage. Boundary contacts are not duplicated since they are directed by definition.
+## Model Architecture
 
-    Also, the force inversion process in step 3 cannot hangle disks with only one contact, since it cannot be in equilibrium. Hence, contact pairs that involve a disk with only one contact are marked as ``singular`` and can be filtered out when needed. This rarely happens, but is checked and handled for robustness.
+The classifier used in Step 2 (`02. TPE_contact_detect.ipynb`) is a binary ResNet18:
 
+- **Classes:** `0` = non-contact, `1` = contact
+- **Backbone:** `torchvision.models.resnet18(weights=None)` at inference, with weights loaded from the trained checkpoint (`models/ResNet18_contact_finetuned.pth`)
+- **Head:** `Linear(512→1024) → ReLU → Dropout(0.5) → Linear(1024→2)`
 
-## The Model
-
-The classifier used in Step 2 (`02. TPE_contact_detect.ipynb`) is a binary ResNet18 model.
-
-- Classes:
-    - `0` = non-contact
-    - `1` = contact
-- Backbone: `torchvision.models.resnet18(weights=None)` at inference (weights loaded from trained checkpoint)
-- Head:
-    - `Linear(512 -> 1024)`
-    - `ReLU`
-    - `Dropout(0.5)`
-    - `Linear(1024 -> 2)`
-
-Typical checkpoint path in this pipeline:
-
-- `models/ResNet18_contact_finetuned.pth`
-
-Preprocessing used before inference (from `src.predict_contact_batch`):
-
-- Crop contact-centered tangent patch for each candidate pair
-- Resize to `128 x 128`
-- Convert grayscale patch to RGB (3 channels)
-- Scale to `[0, 1]`
-- Apply ImageNet normalization
-
-For each candidate pair, the model outputs 2 logits that are converted to softmax probabilities.
-The pipeline stores:
-
-- `contact = argmax(probabilities)`
-- `prob = max(probabilities)`
-
-Candidates predicted as class `1` are retained for downstream post-processing and force inversion.
+Before inference (in `src.predict_contact_batch`), each candidate patch is cropped tangent to the contact, resized to 128×128, converted from grayscale to 3-channel RGB, scaled to `[0, 1]`, and normalized with ImageNet statistics. The model outputs two logits, converted to softmax probabilities; the pipeline keeps `contact = argmax(probabilities)` and `prob = max(probabilities)`, and only candidates predicted as class `1` move on to force inversion.
  
+
+ ## Training params
+ The model stored in [models](https://github.com/linjunJR/TPE_Disk_Image_Processing/tree/main/models) is trained with around 14K human-labelled examples from experiments. 
+Data augmentation techniques such as random flips and brightness adjustments are applied to improve generalization. The dataset is split into 80% train, 20% validation. The model's head is first warmed up for 200 epochs with a batch size of 32, using the Adam optimizer with a learning rate of 1e-3. The whole model is then fine-tuned for 200 with a learning rate of 1e-6. 

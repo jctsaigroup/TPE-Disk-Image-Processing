@@ -818,6 +818,34 @@
   
   
     <li class="md-nav__item">
+      <a href="train-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="stardist-train/" class="md-nav__link">
         
   
@@ -957,8 +985,8 @@
 
 
 <h1 id="tpe-disk-image-processing">TPE Disk Image Processing</h1>
-<p>This pipeline automates the full analysis workflow of a 2D granular experiment using <strong>photoelastic disks</strong> — from raw experimental images to a complete force network. It combines deep learning (StarDist, ResNet) with physics-based optimization under mechanical equilibrium constraints.</p>
-<p>The approach is largely inspired by the established <a href="https://github.com/photoelasticity/PeGS2">PeGS algorithms</a>. But PeGS largely relies on a nice monotonic <span class="arithmatex">\(G^2\)</span> calibration curve. Wet photoelastic disks inevitably develop residual stress, which renders the classical <span class="arithmatex">\(G^2\)</span> method unusable. The custom-trained neural networks here are designed to work around this limitation.</p>
+<p>This document describes the workings of the <a href="https://github.com/linjunjr/TPE-Disk-Image-Processing">TPE_Disk_Image_Processing</a> project, which automates the full analysis workflow of a 2D granular experiment using <strong>photoelastic disks</strong> — from raw experimental images to a complete force network. It combines deep learning (StarDist, ResNet) with physics-based optimization under mechanical equilibrium constraints.</p>
+<p>The approach is largely inspired by the established <a href="https://github.com/photoelasticity/PeGS2">PeGS algorithms</a>. But PeGS largely relies on a nice monotonic <span class="arithmatex">\(G^2\)</span> calibration curve. Wet photoelastic disks inevitably develop residual stress, which renders the classical <span class="arithmatex">\(G^2\)</span> method unusable. An empirical form for the residual stress as well as custom-trained neural networks are deployed to work around this limitation.</p>
 <div style="display:flex; gap:16px; flex-wrap:wrap;">
   <div style="flex:1; min-width:200px">
     <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="figures/original.png" data-desc-position="bottom"><img src="figures/original.png" alt="Experimental image" style="width:100%; border-radius:6px"></a>
