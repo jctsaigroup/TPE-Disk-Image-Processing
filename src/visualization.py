@@ -4,10 +4,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import os
 
 from .utils import crop_circle_with_mask_float
 
-__all__ = ['draw_particle_orientation', 'plot_contacts', 'build_particle_synth_output_img']
+__all__ = ['draw_particle_orientation', 'plot_contacts', 'build_particle_synth_output_img',
+           'visualize_detection', 'visualize_orientation', 'visualize_g2']
 
 
 def build_particle_synth_output_img(f: pd.DataFrame, orig_img: np.ndarray, fsigma: float, device='cuda') -> np.ndarray:
@@ -151,3 +153,100 @@ def plot_contacts(I, f, F_out, boundary_pid):
     img = rgba[..., :3].copy()
     plt.close(fig)
     return img
+
+
+def visualize_detection(df, img_dir, exp_folder, roi, frame=None):
+    """Visualize disk detection with circles overlaid on BW image."""
+    from matplotlib.patches import Circle
+    
+    if frame is None:
+        frame = np.random.choice(df['frame'].unique())
+    
+    mask = (df.frame == frame)
+    frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
+    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    
+    path_bw = os.path.join(img_dir, exp_folder, f'bw_{frame_orig}.png')
+    test_img = cv2.imread(path_bw)[roi[0]:roi[1], roi[2]:roi[3]]
+    
+    fig, ax = plt.subplots(figsize=(16, 12))
+    ax.imshow(test_img, cmap='gray')
+    
+    for _, row in df[mask].iterrows():
+        circ = Circle((row["x"], row["y"]), row["rpx"], edgecolor='red', facecolor='none', linewidth=0.9)
+        ax.add_patch(circ)
+    
+    plt.axis('off')
+    plt.show()
+
+
+def visualize_orientation(df, img_dir, exp_folder, roi, camera_align_fn, skip_orientation=False, frame=None):
+    """Visualize particle orientations on blue channel image."""
+    plt.rcParams['figure.dpi'] = 200
+    
+    if skip_orientation:
+        print("SKIP_ORIENTATION is True — no angle data available to visualize.")
+        return
+    
+    if frame is None:
+        frame = np.random.choice(df['frame'].unique())
+    
+    mask = (df.frame == frame)
+    frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
+    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    
+    path = os.path.join(img_dir, exp_folder, f'blue_{frame_orig:d}.png')
+    I = camera_align_fn(cv2.flip(cv2.imread(path), 1))
+    I = I[roi[0]:roi[1], roi[2]:roi[3], 0]
+    if I.ndim == 2:  
+        I = cv2.cvtColor(I, cv2.COLOR_GRAY2BGR)
+    
+    res = draw_particle_orientation(I.copy(), df[mask], show=False, linecolor='c', linewidth=2)
+    plt.imshow(res)
+    plt.axis('off')
+    plt.show()
+
+
+def visualize_g2(df, img_dir, exp_folder, roi, frame=None):
+    """Visualize G² values overlaid on BW image with color mapping."""
+    import matplotlib.patches as mpatches
+    from matplotlib import cm
+    from matplotlib.colors import Normalize
+    
+    if frame is None:
+        frame = np.random.choice(df['frame'].unique())
+    
+    mask = (df.frame == frame)
+    frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
+    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    
+    image_path = os.path.join(img_dir, exp_folder, f'bw_{frame_orig}.png')
+    img_bgr = cv2.imread(image_path)
+    img_crop = img_bgr[roi[0]:roi[1], roi[2]:roi[3]]
+    img_gray = cv2.cvtColor(img_crop, cv2.COLOR_BGR2GRAY)
+    
+    frame_data = df[mask].copy()
+    f_vals = frame_data['G2'].to_numpy()
+    vmin = np.nanpercentile(f_vals, 1)
+    vmax = np.nanpercentile(f_vals, 99)
+    cmap = plt.colormaps['jet']
+    norm = Normalize(vmin=vmin, vmax=vmax)
+    sm = cm.ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([])
+    
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.imshow(img_gray, cmap='gray', origin='upper')
+    ax.set_aspect('equal')
+    
+    for _, row in frame_data.iterrows():
+        fc = cmap(norm(row.get('G2', np.nan)))
+        circ = mpatches.Circle((float(row['x']), float(row['y'])), float(row['rpx']),
+                               edgecolor='none', facecolor=fc, alpha=0.5, zorder=2)
+        ax.add_patch(circ)
+    
+    cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.04)
+    cbar.set_label('G²')
+    ax.set_title(f'Frame {frame} — G² overlaid on bw image')
+    ax.axis('off')
+    plt.tight_layout()
+    plt.show()

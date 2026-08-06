@@ -21,10 +21,31 @@ __all__ = [
     'fill_temporal_single_frame_gaps',
 ]
 
-def interpolate_pos_angle(df: pd.DataFrame) -> pd.DataFrame:
-    """Linearly interpolate x/y/angle for frames where a particle was not detected."""
+
+def interpolate_pos_angle(df: pd.DataFrame,
+                           frame_orig_col: str = 'frame_orig',
+                           frame_orig_fn=None) -> pd.DataFrame:
+    """Linearly interpolate x/y/angle for frames where a particle was not detected.
+
+    Every other column in *df* is now carried through automatically for the
+    newly-created rows, using one of two strategies:
+
+      - Most bookkeeping columns (e.g. a trial/segment id) are constant across a
+        particle's entire lifetime, so they are simply forward/backward filled
+        within each particle's own rows.
+      - ``frame_orig_col`` (default ``'frame_orig'``), if present, is instead
+        recomputed exactly via ``frame_orig_fn(trial, frame)`` for each
+        newly-created row. The true original/global frame number is a function of
+        the (trial, frame) index pair, not something that can be safely copied
+        from a neighboring row, so it needs its own rule rather than ffill/bfill.
+        If ``frame_orig_fn`` is not supplied, this column falls back to
+        forward/backward fill like everything else -- which is only correct when
+        'frame' already *is* the real frame number (i.e. no frame-sampling remap
+        is in effect).
+    """
     new_rows = []
     total_missing = 0
+    interp_cols = [c for c in ['x', 'y', 'angle', 'boundary'] if c in df.columns]
 
     for pid, particle_data in df.groupby('particle'):
         particle_data = particle_data.set_index('frame').sort_index()
@@ -42,24 +63,48 @@ def interpolate_pos_angle(df: pd.DataFrame) -> pd.DataFrame:
         placeholders.index.name = 'frame'
 
         combined = pd.concat([particle_data, placeholders]).sort_index()
-        combined[['x', 'y', 'angle', 'boundary']] = (
-            combined[['x', 'y', 'angle', 'boundary']]
+
+        combined[interp_cols] = (
+            combined[interp_cols]
             .astype(float)
             .interpolate(method='linear', limit_direction='both')
         )
-        for col in ['rpx']:
-            combined[col] = combined[col].ffill().bfill()
+        if 'rpx' in combined.columns:
+            combined['rpx'] = combined['rpx'].ffill().bfill()
+
+        # Carry through every remaining bookkeeping column: assume constant per particle.
+        handled = set(interp_cols) | {'rpx', 'particle'}
+        remaining = [c for c in combined.columns if c not in handled]
+        if remaining:
+            combined[remaining] = combined[remaining].ffill().bfill()
 
         combined = combined.reset_index()
+
+        # Recompute the true original frame number exactly, when we know how.
+        if frame_orig_fn is not None and frame_orig_col in combined.columns:
+            is_new = combined['frame'].isin(missing)
+            if 'trial' in combined.columns:
+                trial_vals = combined.loc[is_new, 'trial']
+            else:
+                trial_vals = [None] * int(is_new.sum())
+            combined.loc[is_new, frame_orig_col] = [
+                frame_orig_fn(t, fr)
+                for t, fr in zip(trial_vals, combined.loc[is_new, 'frame'])
+            ]
+
         new_rows.append(combined[combined['frame'].isin(missing)])
 
     if new_rows:
         df = pd.concat([df, *new_rows], ignore_index=True)
 
     df = df.sort_values(['particle', 'frame']).reset_index(drop=True)
+    if frame_orig_col in df.columns:
+        df[frame_orig_col] = df[frame_orig_col].astype(int)
+    if 'trial' in df.columns:
+        df['trial'] = df['trial'].astype(int)
+
     print(f'Interpolated {total_missing} missing positions.')
     return df
-
 
 def fit_refined_centroid(patch: np.ndarray):
     """Compute intensity-weighted centroid of a patch for sub-pixel refinement.
@@ -106,7 +151,7 @@ def refine_frame_centers(frame_data, I_frame, kernels: dict, roi: tuple, max_shi
     -------
     List of Series (one per particle) with refined x, y and refine_shift added.
     """
-    Ig = I_frame[roi[0]:roi[1], roi[2]:roi[3], 0].astype(np.float32)
+    Ig = I_frame[roi[0]:roi[1], roi[2]:roi[3]].astype(np.float32)
     Ig_norm = (Ig - Ig.min()) / (Ig.max() - Ig.min() + 1e-6)
 
     # Pre-compute one DoG response per kernel

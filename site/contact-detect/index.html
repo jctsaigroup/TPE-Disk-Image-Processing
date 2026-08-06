@@ -658,10 +658,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#the-model" class="md-nav__link">
+  <a href="#stage-1-neighbour-search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Model
+        Stage 1 — Neighbour search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-2-cnn-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2 — CNN classification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Architecture
       
     </span>
   </a>
@@ -961,10 +983,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#the-model" class="md-nav__link">
+  <a href="#stage-1-neighbour-search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Model
+        Stage 1 — Neighbour search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-2-cnn-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2 — CNN classification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Architecture
       
     </span>
   </a>
@@ -989,67 +1033,26 @@
 
 
 <h1 id="contact-detection">Contact Detection</h1>
-<p>Contact detection is performed in two stages:</p>
-<ol>
-<li>
-<p><strong>Neighbour search:</strong> For each frame, all pairs of particles within a distance threshold are considered as candidate contacts.</p>
-<p>The distance threshold is typically <span class="arithmatex">\(r_i + r_j + d_{tol}\)</span>, where <span class="arithmatex">\(r_i\)</span> and <span class="arithmatex">\(r_j\)</span> are the radii of the two disks. <span class="arithmatex">\(d_{tol}\)</span> is set to 10 pixels for reasonable performance. Larger <span class="arithmatex">\(d_{tol}\)</span> would increase samples to classify and thus runtime, but smaller <span class="arithmatex">\(d_{tol}\)</span> might miss some contacts. </p>
-<p>After locating all the ij pairs, the code handles the index:</p>
+<p>Contact detection happens in two stages: a cheap geometric neighbour search that proposes candidate contacts, followed by a CNN classifier that decides which candidates are real.</p>
+<h2 id="stage-1-neighbour-search">Stage 1 — Neighbour search</h2>
+<p>For each frame, every pair of particles within a distance threshold is treated as a candidate contact. The threshold is <span class="arithmatex">\(r_i + r_j + d_{tol}\)</span>, where <span class="arithmatex">\(r_i\)</span> and <span class="arithmatex">\(r_j\)</span> are the two disk radii and <span class="arithmatex">\(d_{tol}\)</span> is set to 10 pixels — a value chosen for a reasonable trade-off between runtime and completeness. Raising <span class="arithmatex">\(d_{tol}\)</span> pulls in more candidates to classify (slower), while lowering it risks missing real contacts.</p>
+<p>Two indexing rules keep this manageable: disks on the boundary are marked <code>boundary=True</code> and can only appear as the <code>j</code> disk in a pair, so they're never contacted by other boundary disks and never contact anything themselves. And each <code>ij</code> pair is counted once rather than twice, since checking it in both directions would double the classification workload for no benefit.</p>
+<h2 id="stage-2-cnn-classification">Stage 2 — CNN classification</h2>
+<p>Each candidate pair is cropped into a small patch centered on the contact:</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/contact_demo.png" data-desc-position="bottom"><img src="../figures/contact_demo.png" style="width:50%; border-radius:4px"></a></p>
+<p>(the patch on the left shows a real contact; the one on the right doesn't). These patches are passed through a ResNet18 classifier trained on human-labelled examples from experiments. The model outputs a confidence score per candidate, and anything above 0.5 is kept as a detected contact.</p>
+<p>After classification, contacts between two bulk disks are duplicated into their reciprocal <code>ji</code> pair for convenience downstream; boundary contacts aren't duplicated since they're directional by definition. One more cleanup step: the force-inversion step (Step 3) can't handle a disk that has only one contact, since a single contact can't be in equilibrium. Any such pair is flagged <code>singular</code> so it can be filtered out. This is rare, but it's checked for robustness regardless.</p>
+<h2 id="model-architecture">Model Architecture</h2>
+<p>The classifier used in Step 2 (<code>02. TPE_contact_detect.ipynb</code>) is a binary ResNet18:</p>
 <ul>
-<li>
-<p>Disks on the boundary are marked with <code>boundary=True</code>, and these disks can only be the <code>j</code> disk in a contact pair (i.e. they can only be contacted by interior disks, not contact other disks). Hence, there is also no contacts between two boundary disks.</p>
-</li>
-<li>
-<p>Each <span class="arithmatex">\(ij\)</span> pair is only counted once to minimize the classification workload. </p>
-</li>
+<li><strong>Classes:</strong> <code>0</code> = non-contact, <code>1</code> = contact</li>
+<li><strong>Backbone:</strong> <code>torchvision.models.resnet18(weights=None)</code> at inference, with weights loaded from the trained checkpoint (<code>models/ResNet18_contact_finetuned.pth</code>)</li>
+<li><strong>Head:</strong> <code>Linear(512→1024) → ReLU → Dropout(0.5) → Linear(1024→2)</code></li>
 </ul>
-</li>
-<li>
-<p><strong>CNN classification:</strong> Each candidate contact patch is cropped from the image:
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/contact_demo.png" data-desc-position="bottom"><img src="../figures/contact_demo.png" style="width:50%; border-radius:4px"></a></p>
-<p>on the right is a contact, while on the left is a non-contact. These patches are then
-passed through a trained convolutional neural network (ResNet) to classify as contact or non-contact. The model returns a confidence score for each candidate, and only those above 0.5 are retained as detected contacts.</p>
-<p>The model is trained on similar experiment images of contact patches that are human-labelled. See <a href="../contact-detect-train/">training</a> for details on the training pipeline and model architecture.</p>
-<p>After the detection, contacts between bulk disks are duplicated to form the reciprocal <code>ji</code> contact, which is convenient for later usage. Boundary contacts are not duplicated since they are directed by definition.</p>
-<p>Also, the force inversion process in step 3 cannot hangle disks with only one contact, since it cannot be in equilibrium. Hence, contact pairs that involve a disk with only one contact are marked as <code>singular</code> and can be filtered out when needed. This rarely happens, but is checked and handled for robustness.</p>
-</li>
-</ol>
-<h2 id="the-model">The Model</h2>
-<p>The classifier used in Step 2 (<code>02. TPE_contact_detect.ipynb</code>) is a binary ResNet18 model.</p>
-<ul>
-<li>Classes:<ul>
-<li><code>0</code> = non-contact</li>
-<li><code>1</code> = contact</li>
-</ul>
-</li>
-<li>Backbone: <code>torchvision.models.resnet18(weights=None)</code> at inference (weights loaded from trained checkpoint)</li>
-<li>Head:<ul>
-<li><code>Linear(512 -&gt; 1024)</code></li>
-<li><code>ReLU</code></li>
-<li><code>Dropout(0.5)</code></li>
-<li><code>Linear(1024 -&gt; 2)</code></li>
-</ul>
-</li>
-</ul>
-<p>Typical checkpoint path in this pipeline:</p>
-<ul>
-<li><code>models/ResNet18_contact_finetuned.pth</code></li>
-</ul>
-<p>Preprocessing used before inference (from <code>src.predict_contact_batch</code>):</p>
-<ul>
-<li>Crop contact-centered tangent patch for each candidate pair</li>
-<li>Resize to <code>128 x 128</code></li>
-<li>Convert grayscale patch to RGB (3 channels)</li>
-<li>Scale to <code>[0, 1]</code></li>
-<li>Apply ImageNet normalization</li>
-</ul>
-<p>For each candidate pair, the model outputs 2 logits that are converted to softmax probabilities.
-The pipeline stores:</p>
-<ul>
-<li><code>contact = argmax(probabilities)</code></li>
-<li><code>prob = max(probabilities)</code></li>
-</ul>
-<p>Candidates predicted as class <code>1</code> are retained for downstream post-processing and force inversion.</p>
+<p>Before inference (in <code>src.predict_contact_batch</code>), each candidate patch is cropped tangent to the contact, resized to 128×128, converted from grayscale to 3-channel RGB, scaled to <code>[0, 1]</code>, and normalized with ImageNet statistics. The model outputs two logits, converted to softmax probabilities; the pipeline keeps <code>contact = argmax(probabilities)</code> and <code>prob = max(probabilities)</code>, and only candidates predicted as class <code>1</code> move on to force inversion.</p>
+<p>## Training params
+ The model stored in <a href="https://github.com/linjunJR/TPE_Disk_Image_Processing/tree/main/models">models</a> is trained with around 14K human-labelled examples from experiments. 
+Data augmentation techniques such as random flips and brightness adjustments are applied to improve generalization. The dataset is split into 80% train, 20% validation. The model's head is first warmed up for 200 epochs with a batch size of 32, using the Adam optimizer with a learning rate of 1e-3. The whole model is then fine-tuned for 200 with a learning rate of 1e-6. </p>
 
 
 

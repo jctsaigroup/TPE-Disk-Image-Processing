@@ -736,6 +736,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training data generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -747,10 +758,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inference-flow-in-step-3" class="md-nav__link">
+  <a href="#training-params" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inference flow in Step 3
+        Training params
       
     </span>
   </a>
@@ -1016,6 +1027,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#training-data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training data generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1027,10 +1049,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inference-flow-in-step-3" class="md-nav__link">
+  <a href="#training-params" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inference flow in Step 3
+        Training params
       
     </span>
   </a>
@@ -1055,52 +1077,45 @@
 
 
 <h1 id="contact-force-initial-guess">Contact Force Initial Guess</h1>
-<p>This page documents the initial guess stage for contact force inversion.</p>
 <h2 id="goal">Goal</h2>
-<p>For each detected contact ROI, predict:</p>
-<ul>
-<li>force magnitude <span class="arithmatex">\(f\)</span> (<code>force_pred</code>)</li>
-<li>contact angle <span class="arithmatex">\(\alpha\)</span> (<code>angle_pred</code>)</li>
-</ul>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../figures/force_guess_patch.png" data-desc-position="bottom"><img src="../figures/force_guess_patch.png" alt="Force guess" width="200"></a></p>
-<p>These predictions are used as warm-start initial guesses for the <a href="../force-solve/">physics-constrained optimizer</a>, which will seek the best solution. The guess is not expected to be perfect, but it should be close enough to the true solution to help the optimizer converge faster and avoid bad local minima. </p>
+<p>For each detected contact region, the model predicts a force magnitude <span class="arithmatex">\(f\)</span> (<code>force_pred</code>) and a contact angle <span class="arithmatex">\(\alpha\)</span> (<code>angle_pred</code>):</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="figures/force_guess_patch.png" data-desc-position="bottom"><img src="figures/force_guess_patch.png" alt="Force guess" width="200"></a></p>
+<p>These predictions are used as warm-start initial guesses for the <a href="https://linjunjr.github.io/TPE_Disk_Image_Processing/force-solve/">physics-constrained optimizer</a>, which then searches for the best solution. The guess isn't expected to be perfect — it just needs to be close enough to the true solution that the optimizer converges faster and avoids bad local minima.</p>
 <h2 id="why-warm-start-matters">Why warm start matters</h2>
-<p>The inverse problem in <a href="../step3-force/">Step 3</a> is non-convex. Starting from random <code>(f, alpha)</code> is slower and more likely to end in poor local minima, so a good starting point is crucial. The original PeGS implementation uses <span class="arithmatex">\(G^2\)</span> as an initial guess, which fails in the case of residual stress and offers no angle information. The ResNet guess usually puts the optimizer close to a physically plausible basin.</p>
+<p>The inverse problem in <a href="https://linjunjr.github.io/TPE_Disk_Image_Processing/step3-force/">Step 3</a> is non-convex, so starting from a random <code>(f, alpha)</code> is both slower and more likely to end in a poor local minimum — a good starting point matters. The original PeGS implementation uses <span class="arithmatex">\(G^2\)</span> as an initial guess, but that fails under residual stress and gives no angle information at all. The ResNet guess is more robust: it usually lands the optimizer in a physically plausible basin from the start.</p>
+<h2 id="training-data-generation">Training data generation</h2>
+<p>Given a specific contact force vector, one cannot determine the fringes at the contact region because other contacts on that disk also contribute to the fringe pattern. Thus, when generating the synthetic training data, we need to first generate a set of random contact force vectors, put them on random locations on the perimeter of a disk, and generate the corresponding fringes of the whole disk. Contact regions are then cropped out from the disk images and used for training. </p>
+<p>There are various physical constraints on the possible combinations of contact forces on a disk, such as equilibrium and friction. In addition, the choice of random distribution used to sample the force magnitudes and angles affects the model performance, and should be chosen with care. We largely follow the principles and methods proposed in <a href="https://dx.doi.org/10.1088/2632-2153/ac29d5">Renat Sergazinov and Miroslav Kramár 2021 Mach. Learn.: Sci. Technol. 2 045030</a>. The range of force magnitudes largely falls between 0.01 to 5 N. </p>
 <h2 id="the-model">The Model</h2>
 <p>The force-initialization network is a two-output ResNet18 regressor built in <code>src/force.py</code> via <code>get_model(device, output_dim=2)</code>.</p>
-<ul>
-<li>Backbone: ImageNet-pretrained ResNet18</li>
-<li>Head:<ul>
-<li><code>Linear(512 -&gt; 256)</code></li>
-<li><code>ReLU</code></li>
-<li><code>Dropout(0.2)</code></li>
-<li><code>Linear(256 -&gt; 2)</code></li>
-</ul>
-</li>
-<li>Output interpretation: <code>[force_pred, angle_pred]</code></li>
-</ul>
-<p>During training, all backbone layers are frozen in warmup and then unfrozen for fine-tuning.</p>
-<h2 id="inference-flow-in-step-3">Inference flow in Step 3</h2>
-<p>In <code>03. TPE_solve_force_vector.ipynb</code>, the model is used as follows:</p>
-<ol>
-<li>Build model with <code>src.get_model(DEVICE)</code>.</li>
-<li>Load trained weights (<code>.pth</code>) with <code>load_state_dict</code>.</li>
-<li>Switch to inference mode with <code>model.eval()</code>.</li>
-<li>Extract and preprocess contact ROIs.</li>
-<li>Run batched forward passes.</li>
-<li>Write results to bond table columns:<ul>
-<li><code>force_pred</code></li>
-<li><code>angle_pred</code></li>
-</ul>
-</li>
-</ol>
-<p>Typical preprocessing before inference:</p>
-<ul>
-<li>Resize ROI to <code>224 x 224</code></li>
-<li>Replicate grayscale to 3 channels</li>
-<li>Apply ImageNet normalization</li>
-</ul>
-<p>These predictions are warm starts only; final values are obtained by the physics-constrained fit described in <a href="../force-solve/">force-solve.md</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backbone</td>
+<td>ResNet18, ImageNet-pretrained</td>
+</tr>
+<tr>
+<td>Head</td>
+<td><code>Linear(512→256) → ReLU → Dropout(0.2) → Linear(256→2)</code></td>
+</tr>
+<tr>
+<td>Output</td>
+<td><code>[force_pred, angle_pred]</code></td>
+</tr>
+<tr>
+<td>Training schedule</td>
+<td>Backbone frozen during warmup, then unfrozen for fine-tuning</td>
+</tr>
+</tbody>
+</table>
+<h2 id="training-params">Training params</h2>
+<p>The  model saved in <a href="https://github.com/linjunJR/TPE_Disk_Image_Processing/tree/main/models">models</a> is trained with 30000 synthetic images of contact regions that are cropped from disks subject to random forces. The model's head is first warmed up for up to 1000 epochs with a batch size of 32, using the Adam optimizer with a learning rate of <span class="arithmatex">\(10^{-4}\)</span>, then fine-tuned for 1000 epochs with a learning rate of <span class="arithmatex">\(10^{-6}\)</span>. </p>
 
 
 
