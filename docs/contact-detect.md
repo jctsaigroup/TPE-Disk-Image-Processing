@@ -22,7 +22,7 @@ After classification, contacts between two bulk disks are duplicated into their 
 
 ## Model Architecture
 
-The classifier used in Step 2 (`02. TPE_contact_detect.ipynb`) is a binary ResNet18:
+The classifier used in Step 2 (`run_contact.py`) is a binary ResNet18:
 
 - **Classes:** `0` = non-contact, `1` = contact
 - **Backbone:** `torchvision.models.resnet18(weights=None)` at inference, with weights loaded from the trained checkpoint (`models/ResNet18_contact_finetuned.pth`)

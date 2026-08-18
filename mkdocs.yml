@@ -53,11 +53,7 @@ plugins:
 nav:
   - Home: index.md
   - Setup: setup.md
-  - How to Use:
-    - Step 1 — Disk Tracking: step1-tracking.md
-    - Step 2 — Contact Detection: step2-contact.md
-    - Step 3 — Force Vectors: step3-force.md
-    - Batch Script: batch-script.md
+  - Usage Guide: usage.md
   - How it Works:
     - StarDist: stardist.md
     - Finding orientation angles: angles.md

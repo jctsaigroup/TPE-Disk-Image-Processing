@@ -17,7 +17,28 @@ Below is a quick overview of the package and quick starts. For details, refer to
 
 ## Workflow Overview
 
-The analysis pipeline consists of three sequential notebooks that process the trio of experimental images to extract particle trajectories and force networks:
+```mermaid
+graph LR
+    I[Input Images<br/>Green UV PE] 
+    S1[Step 1<br/>run_tracking.py]
+    O1[Trajectory<br/>.pkl]
+    S2[Step 2<br/>run_contact.py]
+    O2[Contacts<br/>.pkl]
+    S3[Step 3<br/>run_force.py]
+    O3[Forces<br/>.pkl]
+    
+    I --> S1 --> O1 --> S2 --> O2 --> S3 --> O3
+    
+    classDef input fill:#87CEEB,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef process fill:#FFD700,stroke:#ff9900,stroke-width:2px,color:#000
+    classDef output fill:#90EE90,stroke:#00aa00,stroke-width:2px,color:#000
+    
+    class I input
+    class S1,S2,S3 process
+    class O1,O2,O3 output
+```
+
+The analysis pipeline consists of three sequential CLI scripts driven by YAML configuration files. The scripts process experimental images (green fluorescence, UV orientation markers, photoelastic PE images) to extract particle trajectories and force networks:
 
 <table><tr>
 <td><img src="figures\green.png" alt="Green channel images"/></td>
@@ -25,36 +46,15 @@ The analysis pipeline consists of three sequential notebooks that process the tr
 <td><img src="figures\UV.png" alt="PE images"/></td>
 </tr></table>
 
-```mermaid
 
-flowchart TD
-    I1[Green Images] --> B[01. TPE_disk_tracking_stardist.ipynb]
-    I2[UV Image] --> B
-    I3[PE Image] --> B
-    I3 --> D
-    B --> C[Trajectory .pkl File<br/> -> positions, angles, IDs, G^2]
-    C --> D[02.TPE_contact_detect.ipynb]
-    D --> E[Contact Bond .pkl File<br/> -> pairs, positions, angles]
-    E --> F[03.TPE_solve_force_vector.ipynb]
-    F --> G[Force .pkl File<br/> -> magnitudes & angles of contact forces]
-        
-    style I1 stroke:#4CAF50,stroke-width:3px
-    style I2 stroke:#2196F3,stroke-width:3px
-    style I3 stroke:#FFC107,stroke-width:3px
-    style C stroke:#FFA726,stroke-width:2px
-    style E stroke:#FFA726,stroke-width:2px
-    style G stroke:#FFA726,stroke-width:2px
-    style B stroke:#9C27B0,stroke-width:2px
-    style D stroke:#9C27B0,stroke-width:2px
-    style F stroke:#9C27B0,stroke-width:2px
-```
 
 ## Pipeline Steps
 
 ### Step 1: Disk Tracking with StarDist
-**Notebook:** `01. TPE_disk_tracking_stardist.ipynb`
+**Script:** `run_tracking.py`  
+**Environment:** `stardist_env`
 
-This notebook performs automated detection and tracking of disks using StarDist 2D: https://github.com/stardist/stardist .
+Automated detection and tracking of disks using StarDist 2D: https://github.com/stardist/stardist
 
 **Key Features:**
 - Disk detection using pre-trained StarDist2D model
@@ -79,7 +79,8 @@ This notebook performs automated detection and tracking of disks using StarDist 
   - Boundary particle tags
 
 ### Step 2: Contact Detection
-**Notebook:** `02. TPE_contact_detect.ipynb`
+**Script:** `run_contact.py`  
+**Environment:** `torch_env`
 
 Identifies and classifies contacts between particles using a trained CNN model.
 
@@ -100,7 +101,8 @@ Identifies and classifies contacts between particles using a trained CNN model.
   - Classification scores
 
 ### Step 3: Force Vector Computation
-**Notebook:** `03. TPE_solve_force_vector.ipynb`
+**Script:** `run_force.py`  
+**Environment:** `torch_env`
 
 Computes force magnitudes and directions at each contact using photoelastic image analysis and optimization.
 
@@ -154,13 +156,98 @@ When opening a notebook in VS Code / JupyterLab, select the matching kernel:
 - **Notebook 01** → select `stardist_env` kernel
 - **Notebooks 02 & 03** → select `torch_env` kernel
 
-## Usage Outline
+## Quick Start
 
-1. **Update experiment parameters** in each notebook:
-   - `IMG_DIR`: Directory containing experimental images
-   - `EXP_FOLDER`: Experiment folder name
+### Configuration
 
-2. Follow the instructions in each notebook to run the analysis steps sequentially
+All pipeline parameters are controlled via two YAML configuration files:
 
-3. **Output files** are saved as pickle files in the specified output directory
+- **`dynamic_config.yaml`** — Experiment-specific settings (paths, experiment folder, frame selection, GPU workers)
+- **`stationary_config.yml`** — Static parameters (model paths, ROI, detection thresholds, fitting hyperparameters)
+
+**Edit `dynamic_config.yaml` before running:**
+
+```yaml
+paths:
+  data_dir: "N:/PROJ_TPE"
+  pkl_dir: "M:/Archive/Proj_TPE/Disk_traj_files"
+  bond_dir: "M:/Archive/Proj_TPE/Contact_bond_files"
+  force_dir: "M:/Archive/Proj_TPE/Force Inversion"
+
+experiment:
+  exp_folder: "TPE_20260807A01_N=262x2_stop_go_1e-3rpsx200s_stop1000s_1000framesx1fps_20reps"
+```
+
+### Running the Pipeline
+
+Activate the appropriate conda environment and run each step sequentially:
+
+```bash
+# Step 1: Disk tracking
+conda activate stardist_env
+python run_tracking.py --config dynamic_config.yaml
+
+# Step 2: Contact detection
+conda activate torch_env
+python run_contact.py --config dynamic_config.yaml
+
+# Step 3: Force computation
+python run_force.py --config dynamic_config.yaml
+```
+
+### CLI Overrides
+
+Override config values from the command line without editing the YAML:
+
+```bash
+# Override experiment folder
+python run_tracking.py --config dynamic_config.yaml --exp-folder TPE_20260808A02_...
+
+# Process only first 10 frames
+python run_tracking.py --config dynamic_config.yaml --frame-mode first --frame-value 10
+
+# Use 8 GPU workers for force fitting
+python run_force.py --config dynamic_config.yaml --gpu-workers 8
+
+# Dry run (validate config without processing)
+python run_tracking.py --config dynamic_config.yaml --dry-run
+```
+
+### Batch Processing
+
+Process multiple experiments in a loop:
+
+**PowerShell:**
+```powershell
+$experiments = @(
+    "TPE_20260808A01_N=262x2_e-5rps",
+    "TPE_20260808A02_N=262x2_2e-5rps",
+    "TPE_20260808A03_N=262x2_5e-5rps"
+)
+
+foreach ($exp in $experiments) {
+    python run_tracking.py --config dynamic_config.yaml --exp-folder $exp
+    python run_contact.py --config dynamic_config.yaml --exp-folder $exp
+    python run_force.py --config dynamic_config.yaml --exp-folder $exp
+}
+```
+
+**Bash:**
+```bash
+for exp in TPE_20260808A01_... TPE_20260808A02_... TPE_20260808A03_...; do
+    python run_tracking.py --config dynamic_config.yaml --exp-folder "$exp"
+    python run_contact.py --config dynamic_config.yaml --exp-folder "$exp"
+    python run_force.py --config dynamic_config.yaml --exp-folder "$exp"
+done
+```
+
+### Notebook Demos
+
+Interactive Jupyter notebooks are available in the `Notebooks/` folder for testing and visualization:
+
+- `01. TPE_disk_tracking_stardist.ipynb`
+- `02. TPE_contact_detect.ipynb`
+- `03. TPE_solve_force_vector.ipynb`
+
+These notebooks demonstrate the same workflow interactively but are not recommended for batch processing.
 

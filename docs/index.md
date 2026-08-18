@@ -20,35 +20,42 @@ The approach is largely inspired by the established [PeGS algorithms](https://gi
 
 ## Workflow Overview
 
-The pipeline consists of three main steps, each implemented as a Jupyter notebook. Each step results in a pickle file `.pkl` that stores a Pandas dataframe. The outputs of one step are the inputs to the next.
+The pipeline consists of three main steps, each implemented as a CLI script driven by YAML configuration. Each step produces a pickle file `.pkl` containing a Pandas dataframe. The outputs of one step are the inputs to the next.
 
 ```mermaid
-flowchart TD
-    I1[Green Images] --> B[01. TPE_disk_tracking_stardist.ipynb]
-    I2[UV Image] --> B
-    I3[PE Image] --> B
-    B --> C[Trajectory .pkl\n positions · angles · IDs · G²]
-    C --> D[02. TPE_contact_detect.ipynb]
-    D --> E[Contact Bond .pkl\n pairs · positions · angles]
-    E --> F[03. TPE_solve_force_vector.ipynb]
-    F --> G[Force .pkl\n magnitudes & angles of contact forces]
+graph LR
+    I[Input Images<br/>Green UV PE] 
+    S1[Step 1<br/>run_tracking.py]
+    O1[Trajectory<br/>.pkl]
+    S2[Step 2<br/>run_contact.py]
+    O2[Contacts<br/>.pkl]
+    S3[Step 3<br/>run_force.py]
+    O3[Forces<br/>.pkl]
+    
+    I --> S1 --> O1 --> S2 --> O2 --> S3 --> O3
+    
+    classDef input fill:#87CEEB,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef process fill:#FFD700,stroke:#ff9900,stroke-width:2px,color:#000
+    classDef output fill:#90EE90,stroke:#00aa00,stroke-width:2px,color:#000
+    
+    class I input
+    class S1,S2,S3 process
+    class O1,O2,O3 output
+    
 
-    style I1 stroke:#4CAF50,stroke-width:3px
-    style I2 stroke:#2196F3,stroke-width:3px
-    style I3 stroke:#FFC107,stroke-width:3px
-    style C stroke:#FFA726,stroke-width:2px
-    style E stroke:#FFA726,stroke-width:2px
-    style G stroke:#FFA726,stroke-width:2px
-    style B stroke:#9C27B0,stroke-width:2px
-    style D stroke:#9C27B0,stroke-width:2px
-    style F stroke:#9C27B0,stroke-width:2px
 ```
 
-| Step | Notebook | Environment | Output |
-|------|----------|-------------|--------|
-| 1 | [`01. TPE_disk_tracking_stardist.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/01.%20TPE_disk_tracking_stardist.ipynb) | `stardist_env` | Trajectory `.pkl` |
-| 2 | [`02. TPE_contact_detect.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/02.%20TPE_contact_detect.ipynb) | `torch_env` | Contact bond `.pkl` |
-| 3 | [`03. TPE_solve_force_vector.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/03.%20TPE_solve_force_vector.ipynb) | `torch_env` | Force `.pkl` |
-| 3 (CPU) | [`03. TPE_solve_force_vector_CPU.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/03.%20TPE_solve_force_vector_CPU.ipynb) | `torch_env` | Force `.pkl` (no GPU required) |
+| Step | Script | Environment | Output |
+|------|--------|-------------|--------|
+| 1 | `run_tracking.py` | `stardist_env` | Trajectory `.pkl` |
+| 2 | `run_contact.py` | `torch_env` | Contact bond `.pkl` |
+| 3 | `run_force.py` | `torch_env` | Force `.pkl` |
 
-For batch/automated runs across many experiments, see the [Batch Script](batch-script.md) page.
+**Notebooks for Demo/Testing:**  
+Interactive Jupyter notebooks demonstrating each step are available in the `Notebooks/` folder:
+
+- [`01. TPE_disk_tracking_stardist.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/01.%20TPE_disk_tracking_stardist.ipynb)
+- [`02. TPE_contact_detect.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/02.%20TPE_contact_detect.ipynb)
+- [`03. TPE_solve_force_vector.ipynb`](https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/03.%20TPE_solve_force_vector.ipynb)
+
+These are useful for visualization and testing but not recommended for batch processing.
