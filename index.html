@@ -354,62 +354,15 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to Use
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    How to Use
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="step1-tracking/" class="md-nav__link">
+      <a href="usage/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Step 1 — Disk Tracking
+    Usage Guide
   
 
     
@@ -418,98 +371,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="step2-contact/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 2 — Contact Detection
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="step3-force/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 3 — Force Vectors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="batch-script/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Batch Script
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1000,31 +861,32 @@
 
 <hr>
 <h2 id="workflow-overview">Workflow Overview</h2>
-<p>The pipeline consists of three main steps, each implemented as a Jupyter notebook. Each step results in a pickle file <code>.pkl</code> that stores a Pandas dataframe. The outputs of one step are the inputs to the next.</p>
-<pre class="mermaid"><code>flowchart TD
-    I1[Green Images] --&gt; B[01. TPE_disk_tracking_stardist.ipynb]
-    I2[UV Image] --&gt; B
-    I3[PE Image] --&gt; B
-    B --&gt; C[Trajectory .pkl\n positions · angles · IDs · G²]
-    C --&gt; D[02. TPE_contact_detect.ipynb]
-    D --&gt; E[Contact Bond .pkl\n pairs · positions · angles]
-    E --&gt; F[03. TPE_solve_force_vector.ipynb]
-    F --&gt; G[Force .pkl\n magnitudes &amp; angles of contact forces]
+<p>The pipeline consists of three main steps, each implemented as a CLI script driven by YAML configuration. Each step produces a pickle file <code>.pkl</code> containing a Pandas dataframe. The outputs of one step are the inputs to the next.</p>
+<pre class="mermaid"><code>graph LR
+    I[Input Images&lt;br/&gt;Green / UV / PE] 
+    S1[Step 1&lt;br/&gt;run_tracking.py]
+    O1[Trajectory&lt;br/&gt;.pkl]
+    S2[Step 2&lt;br/&gt;run_contact.py]
+    O2[Contacts&lt;br/&gt;.pkl]
+    S3[Step 3&lt;br/&gt;run_force.py]
+    O3[Forces&lt;br/&gt;.pkl]
 
-    style I1 stroke:#4CAF50,stroke-width:3px
-    style I2 stroke:#2196F3,stroke-width:3px
-    style I3 stroke:#FFC107,stroke-width:3px
-    style C stroke:#FFA726,stroke-width:2px
-    style E stroke:#FFA726,stroke-width:2px
-    style G stroke:#FFA726,stroke-width:2px
-    style B stroke:#9C27B0,stroke-width:2px
-    style D stroke:#9C27B0,stroke-width:2px
-    style F stroke:#9C27B0,stroke-width:2px</code></pre>
+    I --&gt; S1 --&gt; O1 --&gt; S2 --&gt; O2 --&gt; S3 --&gt; O3
+
+    classDef input fill:#87CEEB,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef process fill:#FFD700,stroke:#ff9900,stroke-width:2px,color:#000
+    classDef output fill:#90EE90,stroke:#00aa00,stroke-width:2px,color:#000
+
+    class I input
+    class S1,S2,S3 process
+    class O1,O2,O3 output
+
+</code></pre>
 <table>
 <thead>
 <tr>
 <th>Step</th>
-<th>Notebook</th>
+<th>Script</th>
 <th>Environment</th>
 <th>Output</th>
 </tr>
@@ -1032,31 +894,32 @@
 <tbody>
 <tr>
 <td>1</td>
-<td><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/01.%20TPE_disk_tracking_stardist.ipynb"><code>01. TPE_disk_tracking_stardist.ipynb</code></a></td>
+<td><code>run_tracking.py</code></td>
 <td><code>stardist_env</code></td>
 <td>Trajectory <code>.pkl</code></td>
 </tr>
 <tr>
 <td>2</td>
-<td><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/02.%20TPE_contact_detect.ipynb"><code>02. TPE_contact_detect.ipynb</code></a></td>
+<td><code>run_contact.py</code></td>
 <td><code>torch_env</code></td>
 <td>Contact bond <code>.pkl</code></td>
 </tr>
 <tr>
 <td>3</td>
-<td><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/03.%20TPE_solve_force_vector.ipynb"><code>03. TPE_solve_force_vector.ipynb</code></a></td>
+<td><code>run_force.py</code></td>
 <td><code>torch_env</code></td>
 <td>Force <code>.pkl</code></td>
 </tr>
-<tr>
-<td>3 (CPU)</td>
-<td><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/03.%20TPE_solve_force_vector_CPU.ipynb"><code>03. TPE_solve_force_vector_CPU.ipynb</code></a></td>
-<td><code>torch_env</code></td>
-<td>Force <code>.pkl</code> (no GPU required)</td>
-</tr>
 </tbody>
 </table>
-<p>For batch/automated runs across many experiments, see the <a href="batch-script/">Batch Script</a> page.</p>
+<p><strong>Notebooks for Demo/Testing:</strong><br>
+Interactive Jupyter notebooks demonstrating each step are available in the <code>Notebooks/</code> folder:</p>
+<ul>
+<li><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/01.%20TPE_disk_tracking_stardist.ipynb"><code>01. TPE_disk_tracking_stardist.ipynb</code></a></li>
+<li><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/02.%20TPE_contact_detect.ipynb"><code>02. TPE_contact_detect.ipynb</code></a></li>
+<li><a href="https://nbviewer.org/github/jctsaigroup/TPE-Disk-Image-Processing/blob/main/Notebooks/03.%20TPE_solve_force_vector.ipynb"><code>03. TPE_solve_force_vector.ipynb</code></a></li>
+</ul>
+<p>These are useful for visualization and testing but not recommended for batch processing.</p>
 
 
 

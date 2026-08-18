@@ -15,7 +15,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../step1-tracking/">
+        <link rel="next" href="../usage/">
       
       
         
@@ -354,13 +354,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-selection-in-vs-code-jupyterlab" class="md-nav__link">
+  <a href="#environment-selection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel Selection in VS Code / JupyterLab
+        Environment Selection
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Environment Selection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notebook-demos-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notebook Demos (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -389,62 +406,15 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to Use
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    How to Use
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../step1-tracking/" class="md-nav__link">
+      <a href="../usage/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Step 1 — Disk Tracking
+    Usage Guide
   
 
     
@@ -453,98 +423,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../step2-contact/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 2 — Contact Detection
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../step3-force/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 3 — Force Vectors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../batch-script/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Batch Script
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1014,13 +892,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kernel-selection-in-vs-code-jupyterlab" class="md-nav__link">
+  <a href="#environment-selection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kernel Selection in VS Code / JupyterLab
+        Environment Selection
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Environment Selection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notebook-demos-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notebook Demos (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1061,7 +956,7 @@
 <thead>
 <tr>
 <th>Environment</th>
-<th>Notebooks</th>
+<th>Pipeline Steps</th>
 <th>GPU backend</th>
 <th>Key packages</th>
 </tr>
@@ -1069,13 +964,13 @@
 <tbody>
 <tr>
 <td><code>stardist_env</code></td>
-<td>01 — Disk tracking</td>
+<td>Step 1 — Disk tracking</td>
 <td>TF 2.10 + CUDA 11.2</td>
 <td>TensorFlow-GPU, StarDist, CSBDeep, Trackpy</td>
 </tr>
 <tr>
 <td><code>torch_env</code></td>
-<td>02, 03 — Contact detect &amp; Force solve</td>
+<td>Steps 2 &amp; 3 — Contact detect &amp; Force solve</td>
 <td>PyTorch + CUDA 12.6</td>
 <td>PyTorch 2.6+cu126, Torchvision</td>
 </tr>
@@ -1107,8 +1002,32 @@
 </code></pre></div>
 <p>This will create both environments from the pinned <code>environments/</code> YAML files.</p>
 <hr>
-<h2 id="kernel-selection-in-vs-code-jupyterlab">Kernel Selection in VS Code / JupyterLab</h2>
-<p>When opening a notebook, select the matching kernel from the top-right kernel picker:</p>
+<h2 id="environment-selection">Environment Selection</h2>
+<p>Activate the appropriate environment before running each pipeline step:</p>
+<table>
+<thead>
+<tr>
+<th>Pipeline Script</th>
+<th>Environment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_tracking.py</code></td>
+<td><code>stardist_env</code></td>
+</tr>
+<tr>
+<td><code>run_contact.py</code></td>
+<td><code>torch_env</code></td>
+</tr>
+<tr>
+<td><code>run_force.py</code></td>
+<td><code>torch_env</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="notebook-demos-optional">Notebook Demos (Optional)</h3>
+<p>If using the interactive notebooks in <code>Notebooks/</code>, select the matching kernel in VS Code / JupyterLab:</p>
 <table>
 <thead>
 <tr>
@@ -1129,21 +1048,16 @@
 <td><code>03. TPE_solve_force_vector.ipynb</code></td>
 <td><code>torch_env</code></td>
 </tr>
-<tr>
-<td><code>03. TPE_solve_force_vector_CPU.ipynb</code></td>
-<td><code>torch_env</code></td>
-</tr>
 </tbody>
 </table>
 <hr>
 <h2 id="required-models">Required Models</h2>
 <p>The pre-trained models must be placed in the <code>models/</code> folder before running:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>models/
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── stardist_model/      ← StarDist2D model for disk segmentation (Notebook 01)
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── contact_model.pth    ← CNN contact classifier (Notebook 02)
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>└── force_model.pth      ← ResNet force regressor (Notebook 03)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── stardist_model/      ← StarDist2D model for disk segmentation
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── contact_model.pth    ← CNN contact classifier 
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>└── force_model.pth      ← ResNet force regressor 
 </code></pre></div>
-<p>Contact the authors if you need access to the pre-trained model weights.</p>
 
 
 
