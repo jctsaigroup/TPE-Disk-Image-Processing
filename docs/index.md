@@ -24,7 +24,7 @@ The pipeline consists of three main steps, each implemented as a CLI script driv
 
 ```mermaid
 graph LR
-    I[Input Images<br/>Green UV PE] 
+    I[Input Images<br/>Green / UV / PE] 
     S1[Step 1<br/>run_tracking.py]
     O1[Trajectory<br/>.pkl]
     S2[Step 2<br/>run_contact.py]
