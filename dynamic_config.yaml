@@ -1,0 +1,56 @@
+# config.yaml
+# Configuration for image processing
+
+# GENERAL CONFIGS #################################################################################
+
+
+paths:
+  data_dir: "N:/PROJ_TPE"
+  pkl_dir: "M:/Archive/Proj_TPE/Disk_traj_files"
+  bond_dir: "M:/Archive/Proj_TPE/Contact_bond_files"
+  force_dir: "M:/Archive/Proj_TPE/Force Inversion"  # Directory for force solver outputs
+  calibration_file: "calibration_matrix/20260807.npy"
+
+
+experiment:
+  # Single experiment or list of experiments
+  # String: "TPE_20260808A01_..."
+  # List: ["TPE_20260808A01_...", "TPE_20260808A02_...", "TPE_20260808A03_..."]
+  exp_folder: ["TPE_20260807A01_N=262x2_stop_go_1e-3rpsx200s_stop1000s_1000framesx1fps_20reps"]
+
+
+# TRACKING CONFIGS #################################################################################
+
+tracking:
+  sampling:
+    sample_log_frames: 1      # false = process every frame
+    skip_orientation: 0       # true if no blue/UV images for this dataset
+    n_trials: 20                 
+    frames_per_trial: 1000
+    n_sample_per_trial: 200
+  
+  frame_selection:
+    mode: "random"                  # "all" (default), "random" (N random frames), "first" (first N frames), or "single" (one specific frame)
+    value: 1                        # for "random": number of random frames; for "first": number of first frames; for "single": frame number
+  
+  verbose: 1                        # Visualize a random tracked frame after processing
+  save: 0                           # Save the trajectory DataFrame to pickle
+
+# CONTACT CONFIGS #################################################################################
+contact:
+  frame_selection:
+    mode: "first"              # "all" (default), "random" (N random frames), "first" (first N frames), or "single" (one specific frame)
+    value: 1                    # for "random": number of random frames; for "first": number of first frames; for "single": frame number
+  verbose: 1                    # Visualize sample frame with contact bonds overlaid
+  save: 1                       # Save contact bonds DataFrame to pickle
+
+# FORCE INV. CONFIGS #################################################################################
+force:
+  # Dynamic fitting configuration (tune per run)
+  gpu_parallel_workers: 4       # Number of particles to fit concurrently per frame
+  plot_every: 0                 # Visualize each disk and its fitting results (only works gpu_parallel_workers = 1) 
+  verbose: 0                    # Print fitting loss details
+  
+  frame_selection:
+    mode: "all"                 # "all" (default), "random" (N random frames), "first" (first N frames), or "single" (one specific frame)
+    value: 1                    # for "random": number of random frames; for "first": number of first frames; for "single": frame number

@@ -1,0 +1,51 @@
+roi:
+  y_min: 250
+  y_max: 1200
+  x_min: 0
+  x_max: 2000
+
+
+detection:
+  model_name: "models/stardist_09221229"
+  prob_thresh: null            # null = use model default
+  nms_thresh: null
+  eccentricity_max: 0.6       # eccentricity thresh for filtering out non-disk detections
+  x_bounds: [100, 1860]       # x position bounds for filtering out-of-bounds detections
+  y_min: 50
+  small_radius_px: 37 
+  large_radius_px: 46
+  area_threshold: 6000          # >= this area -> large_radius_px
+
+linking:
+  search_range: 30
+  memory: 10
+  id_offset: 10000               # per-segment particle ID offset
+
+boundary:                        # ROI for marking boundary particles 
+  x_min: 200
+  x_max: 1770
+  y_min: 120
+  y_max: 800
+
+g2:
+  sigma_frac: 0.1                # width of gaussian ring mask for g2 calculation, as fraction of particle radius
+
+contact:
+  model_path: "models/contact_detect_best_model_20260812.pth"
+  d_tol: 10                      # neighbor distance tolerance [px] for candidate bonds
+
+force:
+  force_model: "models/Contact_Force_ResNet_20260130.pth"  # Pre-trained ResNet18 for force/angle prediction
+  
+  # ResNet inference batching
+  roi_batch_size: 256           # CPU-side ROI accumulation batch
+  infer_batch_size: 64          # GPU/CPU inference mini-batch
+  
+  # Photoelastic constant
+  fsigma: 225
+  
+  # Fitting hyperparameters (tune with care)
+  tol: 1e-3                     # Convergence tolerance
+  patience: 10                  # Early stopping patience
+  lr: 4e-2                      # Learning rate
+  n_iter: 1000                  # Maximum iterations

@@ -1,11 +1,11 @@
 
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 from torchvision import models
+import matplotlib.pyplot as plt
 
 from .utils import get_disk_img
 
@@ -37,6 +37,7 @@ __all__ = [
     'fit_one_particle_cpu',
     'fit_one_particle_gpu',
     'symmetrize_forces',
+    'plot_fit_results',
 ]
 
 
@@ -111,6 +112,37 @@ def symmetrize_forces(F_bond_out: pd.DataFrame):
         'contacts_unchanged': int(len(F_bond_corrected) - len(best_values) // 2),
     }
     return F_compare, F_bond_corrected, stats
+
+def plot_fit_results(particle_id, gray_img, guess_im, fit_im):
+    """Plot the three images from particle fitting: original, initial guess, and optimized fit.
+    
+    Parameters
+    ----------
+    particle_id : int
+        Particle identifier for the title.
+    gray_img : array
+        Original photoelastic image.
+    guess_im : array
+        Synthetic image from ResNet initial guess.
+    fit_im : array
+        Synthetic image from optimized fit.
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    axes[0].imshow(gray_img, cmap='gray')
+    axes[0].set_title(f'Particle {particle_id}: Original Image')
+    axes[0].axis('off')
+    
+    axes[1].imshow(guess_im, cmap='gray')
+    axes[1].set_title(f'Particle {particle_id}: ResNet Initial Guess')
+    axes[1].axis('off')
+    
+    axes[2].imshow(fit_im, cmap='gray')
+    axes[2].set_title(f'Particle {particle_id}: Optimized Fit')
+    axes[2].axis('off')
+    
+    plt.tight_layout()
+    plt.show()
 
 def get_model(device, output_dim=2):
     """
@@ -318,7 +350,7 @@ def fit_one_particle_cpu(
     verbose=0,
     do_plot=False,
 ):
-    """Fit one particle on CPU and return ``(particle_id, pdata_out_df)``."""
+    """Fit one particle on CPU and return ``(particle_id, pdata_out_df, images_dict)``."""
     if img is None:
         raise ValueError('fit_one_particle_cpu received img=None (image decode/read failed upstream).')
 
@@ -369,41 +401,29 @@ def fit_one_particle_cpu(
         device=device,
     )
 
-    if do_plot and fitted_loss.cpu().numpy() > 0:
-        fit_im = synth_img_pytorch_residue(
-            fsigma,
-            rm,
-            img_size,
-            torch.tensor(f_fit, dtype=torch.float32, device=device),
-            torch.tensor(alpha_fit, dtype=torch.float32, device=device),
-            betas_cpu,
-            device=device,
-        )
-        guess_im = synth_img_pytorch_residue(fsigma, rm, img_size, f0_cpu, alpha0_cpu, betas_cpu, device=device)
-
-        plt.figure(figsize=(6, 2))
-        plt.subplot(1, 3, 1)
-        plt.imshow(gray_img_cpu.cpu().numpy(), cmap='gray', vmax=1)
-        plt.title(f'id = {particle_id} \n exp', fontsize=10)
-        plt.axis('off')
-
-        plt.subplot(1, 3, 2)
-        plt.imshow(smooth_image(guess_im, kernel_size=3, sigma=1.0).cpu().numpy(), cmap='gray', vmax=1)
-        plt.title('guess', fontsize=10)
-        plt.axis('off')
-
-        plt.subplot(1, 3, 3)
-        plt.imshow(smooth_image(fit_im, kernel_size=3, sigma=1.0).cpu().numpy(), cmap='gray', vmax=1)
-        plt.title('fit', fontsize=10)
-        plt.axis('off')
-        plt.show()
+    fit_im = synth_img_pytorch_residue(
+        fsigma,
+        rm,
+        img_size,
+        torch.tensor(f_fit, dtype=torch.float32, device=device),
+        torch.tensor(alpha_fit, dtype=torch.float32, device=device),
+        betas_cpu,
+        device=device,
+    )
+    guess_im = synth_img_pytorch_residue(fsigma, rm, img_size, f0_cpu, alpha0_cpu, betas_cpu, device=device)
 
     pdata_out = pdata.copy()
     pdata_out['force'] = f_fit
     pdata_out['alpha'] = alpha_fit
     pdata_out['fitLoss'] = fitted_loss.cpu().numpy()
 
-    return particle_id, pdata_out
+    images = {
+        'gray_img': gray_img_cpu.cpu().numpy(),
+        'guess_im': smooth_image(guess_im, kernel_size=3, sigma=1.0).cpu().numpy(),
+        'fit_im': smooth_image(fit_im, kernel_size=3, sigma=1.0).cpu().numpy(),
+    }
+
+    return particle_id, pdata_out, images
 
 
 def fit_one_particle_gpu(
@@ -420,7 +440,7 @@ def fit_one_particle_gpu(
     verbose=0,
     do_plot=False,
 ):
-    """Fit one particle on GPU and return ``(particle_id, pdata_out_df)``.
+    """Fit one particle on GPU and return ``(particle_id, pdata_out_df, images_dict)``.
 
     All previously implicit notebook dependencies are explicit parameters here.
     """
@@ -475,41 +495,31 @@ def fit_one_particle_gpu(
             device=device,
         )
 
-        if do_plot and fitted_loss.cpu().numpy() > 0:
-            fit_im = synth_img_pytorch_residue(
-                fsigma,
-                rm,
-                img_size,
-                torch.tensor(f_fit, dtype=torch.float32, device=device),
-                torch.tensor(alpha_fit, dtype=torch.float32, device=device),
-                betas_gpu,
-                device=device,
-            )
-            guess_im = synth_img_pytorch_residue(fsigma, rm, img_size, f0_gpu, alpha0_gpu, betas_gpu, device=device)
+        fit_im = synth_img_pytorch_residue(
+            fsigma,
+            rm,
+            img_size,
+            torch.tensor(f_fit, dtype=torch.float32, device=device),
+            torch.tensor(alpha_fit, dtype=torch.float32, device=device),
+            betas_gpu,
+            device=device,
+        )
+        guess_im = synth_img_pytorch_residue(fsigma, rm, img_size, f0_gpu, alpha0_gpu, betas_gpu, device=device)
 
     stream.synchronize()
-
-    if do_plot and fitted_loss.cpu().numpy() > 0:
-        plt.figure(figsize=(6, 2))
-        plt.subplot(1, 3, 1)
-        plt.imshow(gray_img_gpu.cpu().numpy(), cmap='gray', vmax=1)
-        plt.title(f'id = {particle_id} \n exp', fontsize=10)
-        plt.axis('off')
-
-        plt.subplot(1, 3, 2)
-        plt.imshow(smooth_image(guess_im, kernel_size=3, sigma=1.0).cpu().numpy(), cmap='gray', vmax=1)
-        plt.title('guess', fontsize=10)
-        plt.axis('off')
-
-        plt.subplot(1, 3, 3)
-        plt.imshow(smooth_image(fit_im, kernel_size=3, sigma=1.0).cpu().numpy(), cmap='gray', vmax=1)
-        plt.title('fit', fontsize=10)
-        plt.axis('off')
-        plt.show()
 
     pdata_out = pdata.copy()
     pdata_out['force'] = f_fit
     pdata_out['alpha'] = alpha_fit
     pdata_out['fitLoss'] = fitted_loss.cpu().numpy()
 
-    return particle_id, pdata_out
+    if do_plot:
+        images = {
+            'gray_img': gray_img_gpu.cpu().numpy(),
+            'guess_im': smooth_image(guess_im, kernel_size=3, sigma=1.0).cpu().numpy(),
+            'fit_im': smooth_image(fit_im, kernel_size=3, sigma=1.0).cpu().numpy(),
+        }
+    else:
+        images = {}
+
+    return particle_id, pdata_out, images

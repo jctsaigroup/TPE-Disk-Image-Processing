@@ -8,6 +8,5 @@ from .bonds import *
 try:
     from .force import *
     from .model import *
-except ModuleNotFoundError as _e:
-    import warnings
-    warnings.warn(f"src: torch-dependent modules not loaded ({_e}). Install torch to use force/model functionality.")
+except ModuleNotFoundError:
+    pass  # torch-dependent modules skipped; install torch if needed for force/model functionality

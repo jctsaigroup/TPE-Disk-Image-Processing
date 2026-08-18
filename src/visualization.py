@@ -141,11 +141,23 @@ def plot_contacts(I, f, F_out, boundary_pid):
         ax.add_patch(plt.Circle((row['x'], row['y']), row['rpx'],
                                 color='red', fill=False, linewidth=1))
     for _, row in F_out.iterrows():
-        ax.plot([row['xi'], row['xj']], [row['yi'], row['yj']],
-                color='cyan', linestyle='--', linewidth=5, alpha=0.5)
+        xi, yi, xj, yj, ri = row['xi'], row['yi'], row['xj'], row['yj'], row['ri']
+        dx, dy = xj - xi, yj - yi
+        dist = np.sqrt(dx**2 + dy**2)
+        if dist > 0:
+            x_end = xi + (dx / dist) * (ri *0.75)
+            y_end = yi + (dy / dist) * (ri *0.75)
+            ax.plot([xi, x_end], [yi, y_end],
+                    color='cyan', linestyle='--', linewidth=5, alpha=0.5)
     for _, row in F_out[F_out.singular > 0].iterrows():
-        ax.plot([row['xi'], row['xj']], [row['yi'], row['yj']],
-                color='magenta', linestyle='--', linewidth=2, alpha=0.4)
+        xi, yi, xj, yj, ri = row['xi'], row['yi'], row['xj'], row['yj'], row['ri']
+        dx, dy = xj - xi, yj - yi
+        dist = np.sqrt(dx**2 + dy**2)
+        if dist > 0:
+            x_end = xi + (dx / dist) * (ri *0.75)
+            y_end = yi + (dy / dist) * (ri *0.75)
+            ax.plot([xi, x_end], [yi, y_end],
+                    color='magenta', linestyle='--', linewidth=2, alpha=0.4)
     ax.axis('off')
     fig.tight_layout()
     fig.canvas.draw()
@@ -160,11 +172,23 @@ def visualize_detection(df, img_dir, exp_folder, roi, frame=None):
     from matplotlib.patches import Circle
     
     if frame is None:
-        frame = np.random.choice(df['frame'].unique())
+        if 'trial' in df.columns:
+            trial = np.random.choice(df['trial'].unique())
+            frame = np.random.choice(df[df['trial'] == trial]['frame'].unique())
+            mask = (df.trial == trial) & (df.frame == frame)
+        else:
+            frame = np.random.choice(df['frame'].unique())
+            mask = (df.frame == frame)
+    else:
+        if 'trial' in df.columns:
+            trial = np.random.choice(df[df['frame'] == frame]['trial'].unique())
+            mask = (df.trial == trial) & (df.frame == frame)
+        else:
+            mask = (df.frame == frame)
     
-    mask = (df.frame == frame)
     frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
-    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    trial_str = f" trial {int(df.loc[mask, 'trial'].iloc[0])}" if 'trial' in df.columns else ""
+    print(f"Frame: {frame}{trial_str}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
     
     path_bw = os.path.join(img_dir, exp_folder, f'bw_{frame_orig}.png')
     test_img = cv2.imread(path_bw)[roi[0]:roi[1], roi[2]:roi[3]]
@@ -188,12 +212,20 @@ def visualize_orientation(df, img_dir, exp_folder, roi, camera_align_fn, skip_or
         print("SKIP_ORIENTATION is True — no angle data available to visualize.")
         return
     
-    if frame is None:
-        frame = np.random.choice(df['frame'].unique())
+    mask = (df.frame == frame) if frame is not None else None
     
-    mask = (df.frame == frame)
+    if frame is None:
+        if 'trial' in df.columns:
+            trial = np.random.choice(df['trial'].unique())
+            frame = np.random.choice(df[df['trial'] == trial]['frame'].unique())
+            mask = (df.trial == trial) & (df.frame == frame)
+        else:
+            frame = np.random.choice(df['frame'].unique())
+            mask = (df.frame == frame)
+    
     frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
-    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    trial_str = f" trial {int(df.loc[mask, 'trial'].iloc[0])}" if 'trial' in df.columns else ""
+    print(f"Frame: {frame}{trial_str}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
     
     path = os.path.join(img_dir, exp_folder, f'blue_{frame_orig:d}.png')
     I = camera_align_fn(cv2.flip(cv2.imread(path), 1))
@@ -213,12 +245,20 @@ def visualize_g2(df, img_dir, exp_folder, roi, frame=None):
     from matplotlib import cm
     from matplotlib.colors import Normalize
     
-    if frame is None:
-        frame = np.random.choice(df['frame'].unique())
+    mask = (df.frame == frame) if frame is not None else None
     
-    mask = (df.frame == frame)
+    if frame is None:
+        if 'trial' in df.columns:
+            trial = np.random.choice(df['trial'].unique())
+            frame = np.random.choice(df[df['trial'] == trial]['frame'].unique())
+            mask = (df.trial == trial) & (df.frame == frame)
+        else:
+            frame = np.random.choice(df['frame'].unique())
+            mask = (df.frame == frame)
+    
     frame_orig = int(df.loc[mask, 'frame_orig'].iloc[0]) if 'frame_orig' in df.columns else frame
-    print(f"Frame: {frame}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
+    trial_str = f" trial {int(df.loc[mask, 'trial'].iloc[0])}" if 'trial' in df.columns else ""
+    print(f"Frame: {frame}{trial_str}" + (f" (orig {frame_orig})" if 'frame_orig' in df.columns else ""))
     
     image_path = os.path.join(img_dir, exp_folder, f'bw_{frame_orig}.png')
     img_bgr = cv2.imread(image_path)

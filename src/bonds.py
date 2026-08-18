@@ -37,6 +37,36 @@ def drop_bulk_duplicate(df, boundary_pid):
 
 
 
+def promote_singular_best_contact(contacts_df, full_preds_frame_df, boundary_pid):
+    """For each singular particle in contacts, promote its best non-contact from the same frame.
+    
+    Args:
+        contacts_df: DataFrame of confirmed contacts (after process_singular_bonds)
+        full_preds_frame_df: Full predictions (contacts + non-contacts) for the frame
+        boundary_pid: Array of boundary particle IDs
+    
+    Returns:
+        DataFrame of promoted bonds with contact=1 and prob from the best non-contact
+    """
+    singular_ids = contacts_df['singular'][contacts_df['singular'] != -1].unique()
+    
+    promoted = []
+    for sid in singular_ids:
+        non_contacts = full_preds_frame_df[
+            (full_preds_frame_df['contact'] == 0) &
+            ((full_preds_frame_df['i'] == sid) | (full_preds_frame_df['j'] == sid))
+        ]
+        
+        if not non_contacts.empty:
+            best = non_contacts.loc[non_contacts['prob'].idxmin()].copy()
+            best['contact'] = 1  # Mark as promoted contact
+            promoted.append(best)
+    
+    if promoted:
+        return pd.DataFrame(promoted)
+    return pd.DataFrame()
+
+
 def duplicate_and_swap_bulk(F_out):
     """Clone bulk rows and swap i↔j so every particle has its contacts listed under i."""
     to_duplicate = F_out[~F_out['j_on_boundary']].copy()

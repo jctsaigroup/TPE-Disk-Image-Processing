@@ -148,8 +148,6 @@ def get_disk_img(pdata, img):
 
 def iter_contact_roi_batches(F_bond, IMG_DIR, frame_lag=0, batch_size=256, progress_every=1):
     """Yield contact ROI images/metadata in batches to avoid large peak memory."""
-    from IPython.display import clear_output
-
     F_bond = append_ij_angle_to_pdata(F_bond)
     grouped = F_bond.groupby('frame')
 
@@ -160,8 +158,7 @@ def iter_contact_roi_batches(F_bond, IMG_DIR, frame_lag=0, batch_size=256, progr
     max_frame = int(F_bond.frame.max()) if len(F_bond) else 0
     for frame in range(1, max_frame + 1):
         if frame % progress_every == 0:
-            clear_output(wait=True)
-            print(f'Cropping contact ROIs — frame: {frame}/{max_frame}')
+            print(f'\r  Cropping contact ROIs — frame: {frame}/{max_frame}', end='', flush=True)
 
         if frame not in grouped.groups:
             continue
@@ -169,7 +166,7 @@ def iter_contact_roi_batches(F_bond, IMG_DIR, frame_lag=0, batch_size=256, progr
         img_path = os.path.join(IMG_DIR, f'bw_{frame + frame_lag}.png')
         img = cv2.imread(img_path)
         if img is None:
-            print(f'Warning: could not read image {img_path}; skipping frame {frame}')
+            print(f'Warning: could not read image {img_path}; skipping frame {frame}', flush=True)
             continue
 
         frame_data = grouped.get_group(frame)
@@ -206,7 +203,7 @@ def iter_contact_roi_batches(F_bond, IMG_DIR, frame_lag=0, batch_size=256, progr
     if batch_images:
         yield batch_images, batch_metadata, total_seen
 
-    clear_output(wait=True)
+    print()  # Newline after progress
 
 
 def generate_cropped_batch(f: "pd.DataFrame", img: np.ndarray) -> np.ndarray:
